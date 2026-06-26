@@ -175,24 +175,23 @@ function Hero() {
         <div className="space-y-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-term-green/30 bg-term-green/5 px-3 py-1 text-xs text-term-green">
             <span className="size-1.5 rounded-full bg-term-green pulse-dot" />
-            powered by daytona &nbsp;·&nbsp; built at 04:27 AM
+            powered by daytona &nbsp;·&nbsp; coded by virgins, for virgins
           </div>
           <h1 className="font-mono text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
             <span className="text-term-fg">Your </span>
             <span className="text-term-green glow-green">GitHub streak</span>
-            <span className="text-term-fg"> is impressive.</span>
+            <span className="text-term-fg"> is huge.</span>
             <br />
             <span className="text-term-dim">Your </span>
-            <span className="text-term-pink glow-pink">dating streak</span>
-            <span className="text-term-dim">... not so much.</span>
+            <span className="text-term-pink glow-pink">body count</span>
+            <span className="text-term-dim"> is `null`.</span>
           </h1>
           <div className="max-w-xl space-y-1 text-term-dim">
-            <p>You've optimized Kubernetes.</p>
-            <p>You've benchmarked Rust.</p>
-            <p>You've rewritten your dotfiles six times.</p>
+            <p>You went to the gym. Once. In 2019.</p>
+            <p>You have 4 monitors and 0 matches.</p>
+            <p>Tinder said "no" before you finished typing your bio.</p>
             <p className="text-term-fg">
-              Maybe it's finally time to optimize your{" "}
-              <span className="text-term-blue">social graph</span>.
+              Time to <span className="text-term-blue">looksmaxx your terminal</span> instead.
             </p>
           </div>
 
@@ -204,7 +203,7 @@ function Hero() {
               className="group relative inline-flex items-center gap-2 rounded-md border border-term-green/40 bg-term-green/10 px-5 py-3 font-mono text-term-green transition hover:bg-term-green/20 hover:shadow-[0_0_30px_-5px_rgb(74_222_128/0.6)]"
             >
               <span className="text-term-green">$</span>
-              <span className="font-bold">gitlaid connect</span>
+              <span className="font-bold">ssh gitlaid (ascend)</span>
               <span className="ml-1 opacity-60 group-hover:opacity-100">→</span>
             </a>
             <a
@@ -212,18 +211,18 @@ function Hero() {
               className="inline-flex items-center gap-2 rounded-md border border-term-border bg-term-panel px-5 py-3 font-mono text-term-fg transition hover:border-term-blue hover:text-term-blue"
             >
               <span className="text-term-blue">$</span>
-              <span>man love</span>
+              <span>man cope</span>
             </a>
             <span className="text-xs text-term-dim">
-              <span className="text-term-yellow">!</span> 1,337 devs in queue
+              <span className="text-term-yellow">!</span> 1,337 incels in queue
             </span>
           </div>
 
           <div className="grid max-w-xl grid-cols-3 gap-2 text-center font-mono text-xs">
             {[
-              ["1,337", "matched", "text-term-green"],
-              ["42", "AI dates", "text-term-purple"],
-              ["0.01%", "ghosted IRL", "text-term-pink"],
+              ["1,337", "mogged", "text-term-green"],
+              ["42", "ai gfs deployed", "text-term-purple"],
+              ["0.01%", "actually ascended", "text-term-pink"],
             ].map(([n, l, c]) => (
               <div key={l} className="term-panel px-3 py-3">
                 <div className={`text-xl font-bold ${c}`}>{n}</div>
