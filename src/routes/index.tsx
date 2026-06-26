@@ -745,7 +745,7 @@ function AIMode() {
                 <div className="mt-3 flex items-center gap-2 text-xs">
                   <span className="size-1.5 rounded-full bg-term-green pulse-dot" />
                   <span className="text-term-green">online</span>
-                  <span className="text-term-dim">· 100% horny for tech</span>
+                  <span className="text-term-dim">· will mog you respectfully</span>
                 </div>
               </div>
             ))}
