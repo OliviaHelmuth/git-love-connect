@@ -159,8 +159,9 @@ function ConnectTerminal({
             </div>
             <div className="space-y-2 font-mono text-sm">
               <div className="rounded border border-term-blue/30 bg-term-blue/10 p-3 text-xs text-term-blue">
-                Command copied to clipboard. Paste it into your terminal and press Enter.
+                Running curl against the Daytona harness. Output streams below — also copied to your clipboard so you can paste into a real terminal.
               </div>
+
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 overflow-x-auto whitespace-pre text-term-fg">
                   <span className="text-term-green">$</span> {DAYTONA_TERMINAL_COMMAND}
@@ -1477,33 +1478,11 @@ function GitLaidLanding() {
   const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
 
   const launchTerminal = () => {
+    // execute the curl directly via server fn and stream output into the in-page terminal
     navigator.clipboard.writeText(DAYTONA_TERMINAL_COMMAND).catch(() => {});
-    // download a .command file — double-click on macOS opens Terminal and runs curl
-    try {
-      const script = [
-        "#!/bin/bash",
-        "clear",
-        "echo '>>> ssh-ing into gitlaid... brace for emotional damage'",
-        "echo ''",
-        DAYTONA_TERMINAL_COMMAND,
-        "echo ''",
-        "echo '>>> connection attempt complete. press any key to dilate.'",
-        "read -n 1 -s",
-      ].join("\n");
-      const blob = new Blob([script], { type: "application/x-sh" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "gitlaid-connect.command";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch {
-      /* ignore — clipboard + modal still work */
-    }
     setHealthTerminalOpen(true);
   };
+
 
   useEffect(() => {
     const handler = () => launchTerminal();
