@@ -560,8 +560,8 @@ function FakeVSCode() {
         <SectionHeader
           file="src/"
           icon="▼"
-          title="Every feature is just a file."
-          subtitle="// click to read the source"
+          title="Every feature is a file. Read it and cope."
+          subtitle="// click a file. read the source. seethe."
         />
         <div className="term-panel scanlines grid grid-cols-1 overflow-hidden md:grid-cols-[220px_1fr]">
           {/* sidebar */}
