@@ -6,16 +6,16 @@ import { TerminalWindow } from "@/components/TerminalWindow";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "GitLaid — SSH into love" },
+      { title: "GitLaid — ssh into a girlfriend" },
       {
         name: "description",
         content:
-          "git clone love. The world's first terminal-native dating app, powered by Daytona. Match with another sleep-deprived engineer in a shared tmux session.",
+          "git clone love. The only dating app where you ssh into a Daytona box and yap with another lonely dev for 5 minutes. No humans online? We spawn a Chadbot.",
       },
-      { property: "og:title", content: "GitLaid — SSH into love" },
+      { property: "og:title", content: "GitLaid — ssh into a girlfriend" },
       {
         property: "og:description",
-        content: "git clone love. Powered by Daytona. Spawn an AI date if nobody's online.",
+        content: "Cope harder. Match faster. Powered by Daytona. AI girlfriend fallback included.",
       },
     ],
   }),
@@ -28,7 +28,10 @@ const DAYTONA_URL =
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
 
 function MatrixRain() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const cols = useMemo(() => {
+    if (!mounted) return [] as { left: number; delay: number; dur: number; chars: string }[];
     const arr: { left: number; delay: number; dur: number; chars: string }[] = [];
     const glyphs = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ$#%&@*!?<>+={}[]";
     for (let i = 0; i < 28; i++) {
@@ -42,7 +45,7 @@ function MatrixRain() {
       });
     }
     return arr;
-  }, []);
+  }, [mounted]);
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.08]">
       {cols.map((c, i) => (
@@ -124,15 +127,15 @@ function TopBar({ status }: { status: string }) {
 /* ─────────────────────────────────────────── boot / hero ─────────────────────────────────────────── */
 
 const BOOT_LINES = [
-  { t: "Initializing loneliness...", color: "text-term-fg" },
-  { t: "Loading social skills...", color: "text-term-fg" },
-  { t: "ERROR: social skills module missing", color: "text-term-red" },
-  { t: "Retrying...", color: "text-term-yellow" },
-  { t: "Connecting to Daytona...", color: "text-term-blue" },
-  { t: "Provisioning workspace [▓▓▓▓▓▓▓▓▓▓] 100%", color: "text-term-green" },
-  { t: "Searching for another sleep-deprived engineer...", color: "text-term-fg" },
+  { t: "Booting cope.exe...", color: "text-term-fg" },
+  { t: "Loading rizz module...", color: "text-term-fg" },
+  { t: "ERROR: rizz not found (have you tried the gym?)", color: "text-term-red" },
+  { t: "Retrying as Sigma...", color: "text-term-yellow" },
+  { t: "Tunneling into Daytona...", color: "text-term-blue" },
+  { t: "Spinning up workspace [▓▓▓▓▓▓▓▓▓▓] 100%", color: "text-term-green" },
+  { t: "Scanning for another touch-grass-deprived dev...", color: "text-term-fg" },
   { t: "", color: "" },
-  { t: "Match Found.", color: "text-term-green glow-green" },
+  { t: "She found you. (cope)", color: "text-term-green glow-green" },
 ];
 
 function BootSequence({ onDone }: { onDone?: () => void }) {
@@ -172,24 +175,23 @@ function Hero() {
         <div className="space-y-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-term-green/30 bg-term-green/5 px-3 py-1 text-xs text-term-green">
             <span className="size-1.5 rounded-full bg-term-green pulse-dot" />
-            powered by daytona &nbsp;·&nbsp; built at 04:27 AM
+            powered by daytona &nbsp;·&nbsp; coded by virgins, for virgins
           </div>
           <h1 className="font-mono text-4xl font-bold leading-[1.05] sm:text-5xl lg:text-6xl">
             <span className="text-term-fg">Your </span>
             <span className="text-term-green glow-green">GitHub streak</span>
-            <span className="text-term-fg"> is impressive.</span>
+            <span className="text-term-fg"> is huge.</span>
             <br />
             <span className="text-term-dim">Your </span>
-            <span className="text-term-pink glow-pink">dating streak</span>
-            <span className="text-term-dim">... not so much.</span>
+            <span className="text-term-pink glow-pink">body count</span>
+            <span className="text-term-dim"> is `null`.</span>
           </h1>
           <div className="max-w-xl space-y-1 text-term-dim">
-            <p>You've optimized Kubernetes.</p>
-            <p>You've benchmarked Rust.</p>
-            <p>You've rewritten your dotfiles six times.</p>
+            <p>You went to the gym. Once. In 2019.</p>
+            <p>You have 4 monitors and 0 matches.</p>
+            <p>Tinder said "no" before you finished typing your bio.</p>
             <p className="text-term-fg">
-              Maybe it's finally time to optimize your{" "}
-              <span className="text-term-blue">social graph</span>.
+              Time to <span className="text-term-blue">looksmaxx your terminal</span> instead.
             </p>
           </div>
 
@@ -201,7 +203,7 @@ function Hero() {
               className="group relative inline-flex items-center gap-2 rounded-md border border-term-green/40 bg-term-green/10 px-5 py-3 font-mono text-term-green transition hover:bg-term-green/20 hover:shadow-[0_0_30px_-5px_rgb(74_222_128/0.6)]"
             >
               <span className="text-term-green">$</span>
-              <span className="font-bold">gitlaid connect</span>
+              <span className="font-bold">ssh gitlaid (ascend)</span>
               <span className="ml-1 opacity-60 group-hover:opacity-100">→</span>
             </a>
             <a
@@ -209,18 +211,18 @@ function Hero() {
               className="inline-flex items-center gap-2 rounded-md border border-term-border bg-term-panel px-5 py-3 font-mono text-term-fg transition hover:border-term-blue hover:text-term-blue"
             >
               <span className="text-term-blue">$</span>
-              <span>man love</span>
+              <span>man cope</span>
             </a>
             <span className="text-xs text-term-dim">
-              <span className="text-term-yellow">!</span> 1,337 devs in queue
+              <span className="text-term-yellow">!</span> 1,337 incels in queue
             </span>
           </div>
 
           <div className="grid max-w-xl grid-cols-3 gap-2 text-center font-mono text-xs">
             {[
-              ["1,337", "matched", "text-term-green"],
-              ["42", "AI dates", "text-term-purple"],
-              ["0.01%", "ghosted IRL", "text-term-pink"],
+              ["1,337", "mogged", "text-term-green"],
+              ["42", "ai gfs deployed", "text-term-purple"],
+              ["0.01%", "actually ascended", "text-term-pink"],
             ].map(([n, l, c]) => (
               <div key={l} className="term-panel px-3 py-3">
                 <div className={`text-xl font-bold ${c}`}>{n}</div>
@@ -239,15 +241,16 @@ function Hero() {
                 <pre className="rounded bg-term-panel-2 p-3 text-xs">
 {`{
   "handle":   "ashley.eth",
-  "role":     "Frontend Goblin",
-  "status":   "debugging CSS at 4am",
+  "role":     "Frontend gigastacy",
+  "status":   "fighting CSS at 4am",
   "distance": "2 latency-units away",
-  "vibes":    ["chaotic", "neutral", "vim"]
+  "vibes":    ["chaotic", "neutral", "vim"],
+  "willMog":  true
 }`}
                 </pre>
                 <div className="pt-2">
                   <span className="text-term-green">$</span>{" "}
-                  <Typewriter text="accept --partner ashley.eth" speed={45} />
+                  <Typewriter text="accept --partner ashley --cope=maximum" speed={45} />
                 </div>
               </div>
             )}
@@ -261,19 +264,19 @@ function Hero() {
 /* ─────────────────────────────────────────── live demo ─────────────────────────────────────────── */
 
 const DEMO_SCRIPT: { side: "you" | "ash" | "sys" | "cmd"; text: string; delay?: number }[] = [
-  { side: "cmd", text: "$ gitlaid connect" },
-  { side: "sys", text: "▸ Connecting to Daytona..." },
-  { side: "sys", text: "▸ Workspace created  ✓" },
-  { side: "sys", text: "▸ Searching..." },
-  { side: "sys", text: "▸ Searching..." },
-  { side: "sys", text: "▸ Searching..." },
-  { side: "sys", text: "▸ Found: Ashley  ·  Frontend Goblin  ·  debugging CSS" },
+  { side: "cmd", text: "$ ssh gitlaid" },
+  { side: "sys", text: "▸ Daytona spinning up your cope-box..." },
+  { side: "sys", text: "▸ Workspace ready  ✓" },
+  { side: "sys", text: "▸ Looking for a foid..." },
+  { side: "sys", text: "▸ Looking for a foid..." },
+  { side: "sys", text: "▸ Looking for a foid..." },
+  { side: "sys", text: "▸ Found: Ashley · Stacy.exe · 8/10 (mogs you)" },
   { side: "cmd", text: "Accept? (Y/n)  Y" },
-  { side: "sys", text: "✓ entering shared tmux session..." },
+  { side: "sys", text: "✓ entering shared tmux. don't be weird." },
   { side: "ash", text: "tabs?" },
   { side: "you", text: "spaces." },
-  { side: "sys", text: "✗ ashley disconnected. (reason: tabs)" },
-  { side: "cmd", text: "$ gitlaid retry --with-empathy" },
+  { side: "sys", text: "✗ ashley dipped. (reason: tabs · over for spacecels)" },
+  { side: "cmd", text: "$ gitlaid retry --plead" },
 ];
 
 function LiveDemo() {
@@ -293,8 +296,8 @@ function LiveDemo() {
         <SectionHeader
           file="demo/speed-date.replay"
           icon="▶"
-          title="Live re-run: an actual match."
-          subtitle="// names changed to protect the lonely"
+          title="Live replay: a real date (allegedly)."
+          subtitle="// names redacted to protect the gymcels"
         />
         <TerminalWindow
           tabs={[
@@ -388,13 +391,13 @@ function SectionHeader({
 /* ─────────────────────────────────────────── how it works ─────────────────────────────────────────── */
 
 const STEPS = [
-  ["Connect", "ssh into gitlaid.dev"],
-  ["Provision Daytona Workspace", "ephemeral, isolated, horny"],
-  ["Random Match", "queue.pop() or spawnAI()"],
-  ["5 Minute Terminal Chat", "tmux session, 2 humans, 0 filters"],
-  ["/git commit", "commit to the bit"],
-  ["Exchange usernames", "github > insta"],
-  ["Maybe touch grass together", "optional flag"],
+  ["ssh in", "no app. no profile pic. mog the algorithm."],
+  ["Daytona spins your box", "ephemeral, isolated, slightly horny"],
+  ["Random match", "queue.pop() or, if it's over, spawnAI()"],
+  ["5 min in shared tmux", "two devs. one terminal. zero filters."],
+  ["/git commit", "both press Y or it never happened"],
+  ["Swap @handles", "github > insta. always."],
+  ["Touch grass (optional)", "advanced users only"],
 ];
 
 function HowItWorks() {
@@ -404,8 +407,8 @@ function HowItWorks() {
         <SectionHeader
           file="docs/HOW_IT_WORKS.md"
           icon="#"
-          title="The pipeline."
-          subtitle="// it's just a CI/CD job for your love life"
+          title="How you cope."
+          subtitle="// it's just CI/CD for your love life"
         />
         <div className="term-panel scanlines overflow-hidden">
           <div className="flex items-center justify-between border-b border-term-border bg-term-panel-2 px-3 py-2 text-xs">
@@ -557,8 +560,8 @@ function FakeVSCode() {
         <SectionHeader
           file="src/"
           icon="▼"
-          title="Every feature is just a file."
-          subtitle="// click to read the source"
+          title="Every feature is a file. Read it and cope."
+          subtitle="// click a file. read the source. seethe."
         />
         <div className="term-panel scanlines grid grid-cols-1 overflow-hidden md:grid-cols-[220px_1fr]">
           {/* sidebar */}
@@ -673,32 +676,32 @@ function paint(line: string): ReactNode {
 /* ─────────────────────────────────────────── AI mode ─────────────────────────────────────────── */
 
 const PERSONAS = [
-  ["Linux Goth Girl", "/etc/eyeliner.conf", "var(--term-purple)"],
-  ["Senior Rust Engineer", "borrow checker certified", "var(--term-orange)"],
-  ["Catgirl Compiler", "nya: error E0382", "var(--term-pink)"],
-  ["Vim Wizard", ":wq into my heart", "var(--term-green)"],
-  ["Docker Princess", "single layer, no drama", "var(--term-blue)"],
-  ["GPU Mommy", "cuda://yes", "var(--term-pink)"],
-  ["Caffeine AI", "Club Mate IV drip", "var(--term-yellow)"],
-  ["TypeScript Therapist", "any feelings allowed", "var(--term-cyan)"],
+  ["Linux Goth Girl", "/etc/eyeliner.conf — will mog you in arch", "var(--term-purple)"],
+  ["Senior Rust GigaChad", "borrow-checker certified · 6'4\" type system", "var(--term-orange)"],
+  ["Catgirl Compiler", "nya: error E0382 — borrowed your heart", "var(--term-pink)"],
+  ["Vim Wizard", ":wq into my dms", "var(--term-green)"],
+  ["Docker Stacy", "single layer, no drama, no exes", "var(--term-blue)"],
+  ["GPU Mommy", "cuda://yes daddy", "var(--term-pink)"],
+  ["Caffeine AI", "Club Mate IV drip · blackpilled", "var(--term-yellow)"],
+  ["TypeScript Therapist", "tell me about your `any`", "var(--term-cyan)"],
 ] as const;
 
 function AIMode() {
   const lines = [
-    "▸ no humans in queue",
-    "▸ Deploying AI...",
-    "▸ Loading personality...",
-    "▸ Injecting sarcasm... [▓▓▓▓▓▓▓▓▓▓] 100%",
-    "▸ Done.",
+    "▸ 0 stacies in queue. it is over.",
+    "▸ Deploying AI gf...",
+    "▸ Loading personality.json...",
+    "▸ Injecting sass + slight contempt... [▓▓▓▓▓▓▓▓▓▓] 100%",
+    "▸ Ready. she's already disappointed.",
   ];
   return (
     <section id="ai" className="border-b border-term-border py-16">
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeader
-          file="services/ai-emergency-date.service"
+          file="services/ai-emergency-gf.service"
           icon="✦"
-          title="AI Emergency Date™"
-          subtitle="// when the queue is empty, the gpus aren't"
+          title="AI Emergency Girlfriend™"
+          subtitle="// queue is empty. the GPUs are not. ascend anyway."
         />
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <TerminalWindow title="systemd[1] gitlaid-ai.service">
@@ -735,14 +738,14 @@ function AIMode() {
                   >
                     AI
                   </span>
-                  <span className="font-mono text-[10px] text-term-dim">v0.{Math.floor(Math.random() * 9) + 1}</span>
+                  <span className="font-mono text-[10px] text-term-dim">v0.{(name.length % 9) + 1}</span>
                 </div>
                 <div className="font-mono text-base font-bold text-term-fg">{name}</div>
                 <div className="font-mono text-xs text-term-dim">// {sub}</div>
                 <div className="mt-3 flex items-center gap-2 text-xs">
                   <span className="size-1.5 rounded-full bg-term-green pulse-dot" />
                   <span className="text-term-green">online</span>
-                  <span className="text-term-dim">· 100% horny for tech</span>
+                  <span className="text-term-dim">· will mog you respectfully</span>
                 </div>
               </div>
             ))}
@@ -756,14 +759,14 @@ function AIMode() {
 /* ─────────────────────────────────────────── icebreakers ─────────────────────────────────────────── */
 
 const ICEBREAKERS = [
-  "What's your worst merge conflict?",
-  "Tabs or Spaces?",
+  "Tabs or spaces? (wrong answer = rope)",
+  "Last time you saw the sun?",
   "Rate Kubernetes from 1 to emotional damage.",
-  "What's your biggest production incident?",
-  "What's your favourite Linux distro?",
-  "What's your red flag?",
-  "How many hackathons have you won?",
-  "When was the last time you saw sunlight?",
+  "Worst prod incident — go.",
+  "Arch btw or Ubuntu cope?",
+  "Your biggest red flag in <80 cols.",
+  "How many hackathons before you ascend?",
+  "On a scale of 1 to gigachad, your `git blame` energy?",
 ];
 
 function Icebreakers() {
@@ -778,8 +781,8 @@ function Icebreakers() {
         <SectionHeader
           file="bin/icebreakers.sh"
           icon="❄"
-          title="Icebreakers, auto-piped."
-          subtitle="// no more 'hey :)'"
+          title="Auto-rizz, piped straight into the pty."
+          subtitle="// no more 'hey :)' — that's beta behavior"
         />
         <TerminalWindow title="bash — icebreakers.sh --random">
           <div className="grid gap-0 bg-term-bg md:grid-cols-2">
@@ -817,13 +820,13 @@ function Icebreakers() {
 
 const STATS: { label: string; value: number | string; color: string; max?: number }[] = [
   { label: "git commits", value: 18, color: "var(--term-green)", max: 20 },
-  { label: "docker containers", value: 20, color: "var(--term-blue)", max: 20 },
-  { label: "coffee (cups)", value: 16, color: "var(--term-orange)", max: 20 },
+  { label: "open docker tabs", value: 20, color: "var(--term-blue)", max: 20 },
+  { label: "energy drinks", value: 16, color: "var(--term-orange)", max: 20 },
   { label: "sleep (hrs)", value: 2, color: "var(--term-purple)", max: 20 },
   { label: "vitamin D", value: 1, color: "var(--term-yellow)", max: 20 },
-  { label: "social skills", value: "Segmentation Fault", color: "var(--term-red)" },
-  { label: "dating experience", value: "404", color: "var(--term-red)" },
-  { label: "grass touches", value: "NULL", color: "var(--term-red)" },
+  { label: "rizz", value: "Segmentation Fault", color: "var(--term-red)" },
+  { label: "matches on tinder", value: "404", color: "var(--term-red)" },
+  { label: "times touched grass", value: "NULL", color: "var(--term-red)" },
 ];
 
 function Problem() {
@@ -833,8 +836,8 @@ function Problem() {
         <SectionHeader
           file="reports/avg-hackathon-dev.log"
           icon="⚠"
-          title="Average Hackathon Developer Stats"
-          subtitle="// taken at 04:27 AM. n=∞"
+          title="`htop` of the average hackathon dev"
+          subtitle="// snapshot @ 04:27 AM · n=∞ · over for codecels"
         />
         <TerminalWindow title="htop — devs.local" variant="log">
           <div className="bg-term-bg p-5 font-mono text-sm">
@@ -871,9 +874,9 @@ function Problem() {
         {/* Why GitLaid */}
         <div className="mt-10 grid gap-4 md:grid-cols-2">
           <div className="term-panel p-5">
-            <div className="mb-2 font-mono text-xs text-term-dim">// the old way</div>
+            <div className="mb-2 font-mono text-xs text-term-dim">// the cope you tried</div>
             <ul className="space-y-2 font-mono">
-              {["Endless swiping", "Instagram filters", "LinkedIn networking", "Small talk", "Awkward mixers"].map(
+              {["Swiping till your thumb breaks", "Instagram filters lying to you", "LinkedIn 'networking' (cringe)", "Small talk at meetups", "Awkward hackathon mixers"].map(
                 (x) => (
                   <li key={x} className="flex items-center gap-3 text-term-fg/70 line-through">
                     <span className="text-term-red">✗</span> {x}
@@ -883,14 +886,14 @@ function Problem() {
             </ul>
           </div>
           <div className="term-panel p-5">
-            <div className="mb-2 font-mono text-xs text-term-green">// gitlaid</div>
+            <div className="mb-2 font-mono text-xs text-term-green">// gitlaid (the ascension)</div>
             <ul className="space-y-2 font-mono">
               {[
-                "Shared terminal",
-                "Shared suffering",
-                "Shared Docker errors",
-                "Nerd humor",
-                "Actually talking",
+                "One shared terminal",
+                "Shared suffering = bonding",
+                "Mutual Docker trauma",
+                "Inside jokes in <80 cols",
+                "She might actually reply",
               ].map((x) => (
                 <li key={x} className="flex items-center gap-3 text-term-fg">
                   <span className="text-term-green">✓</span> {x}
@@ -913,29 +916,29 @@ function MatchSystem() {
         <SectionHeader
           file="src/match-system.ts"
           icon="❤"
-          title="Both commit, or both reset."
-          subtitle="// consent via cli, the way nature intended"
+          title="Both commit, or it never happened."
+          subtitle="// consent via CLI — that's right, foid, type Y"
         />
         <div className="grid gap-6 md:grid-cols-2">
           <TerminalWindow title="you@laptop">
             <div className="space-y-2 bg-term-bg p-5 font-mono text-sm">
-              <div className="text-term-dim">// 5 min timer expires</div>
+              <div className="text-term-dim">// 5 min timer just expired</div>
               <div>
-                <span className="text-term-green">$</span> /git commit
+                <span className="text-term-green">$</span> /git commit -m "i kinda vibe with her"
               </div>
-              <div className="text-term-green">[committed] ✓ awaiting partner...</div>
+              <div className="text-term-green">[committed] ✓ waiting for her response (cope)...</div>
               <div className="text-term-dim">
-                <Typewriter text="...waiting...waiting..." speed={80} />
+                <Typewriter text="...waiting...waiting...still waiting..." speed={80} />
               </div>
             </div>
           </TerminalWindow>
           <TerminalWindow title="ashley@daytona">
             <div className="space-y-2 bg-term-bg p-5 font-mono text-sm">
-              <div className="text-term-dim">// 5 min timer expires</div>
+              <div className="text-term-dim">// 5 min timer just expired</div>
               <div>
-                <span className="text-term-pink">$</span> /git commit
+                <span className="text-term-pink">$</span> /git commit -m "ok he's not unfixable"
               </div>
-              <div className="text-term-green">[committed] ✓ usernames exchanged</div>
+              <div className="text-term-green">[committed] ✓ handles dropped</div>
               <pre className="rounded bg-term-panel-2 p-3 text-xs text-term-fg">
 {`→ github.com/ashley.eth
 → keybase.io/ashley
@@ -947,7 +950,7 @@ function MatchSystem() {
         <div className="mt-4 rounded-md border border-term-red/30 bg-term-red/5 p-4 font-mono text-sm text-term-red">
           <span className="font-bold">otherwise:</span>{" "}
           <span className="text-term-fg">git reset --hard HEAD~1</span>{" "}
-          <span className="text-term-dim">// nothing happened, nothing to see</span>
+          <span className="text-term-dim">// it's so over. dilate. nothing happened.</span>
         </div>
       </div>
     </section>
@@ -957,11 +960,11 @@ function MatchSystem() {
 /* ─────────────────────────────────────────── git log testimonials ─────────────────────────────────────────── */
 
 const COMMITS = [
-  { hash: "c4f33", author: "tmux_lord", date: "2h ago", msg: "She liked my tmux config.", color: "var(--term-green)" },
-  { hash: "deadbeef", author: "ana@rust", date: "5h ago", msg: "I accidentally found a co-founder.", color: "var(--term-orange)" },
-  { hash: "404", author: "lonely_dev", date: "1d ago", msg: "We're just friends.", color: "var(--term-red)" },
-  { hash: "beef420", author: "vim_curious", date: "3d ago", msg: "Still single. But now I know Vim.", color: "var(--term-purple)" },
-  { hash: "feedc0de", author: "kube_kat", date: "1w ago", msg: "We migrated our relationship to k8s. It scales.", color: "var(--term-blue)" },
+  { hash: "c4f33", author: "tmux_lord", date: "2h ago", msg: "She liked my .tmux.conf. I have ascended.", color: "var(--term-green)" },
+  { hash: "deadbeef", author: "ana@rust", date: "5h ago", msg: "Went in looking for a gf. Left with a co-founder. Mid result tbh.", color: "var(--term-orange)" },
+  { hash: "404", author: "lonely_dev", date: "1d ago", msg: "she said 'we're just friends'. it's so over.", color: "var(--term-red)" },
+  { hash: "beef420", author: "vim_curious", date: "3d ago", msg: "Still single. But I learned Vim. Net positive.", color: "var(--term-purple)" },
+  { hash: "feedc0de", author: "kube_kat", date: "1w ago", msg: "We migrated our relationship to k8s. It autoscales.", color: "var(--term-blue)" },
 ];
 
 function Testimonials() {
@@ -971,8 +974,8 @@ function Testimonials() {
         <SectionHeader
           file="git log --oneline testimonials/"
           icon="❯"
-          title="Receipts on the main branch."
-          subtitle="// rebased for clarity"
+          title="Receipts. On the main branch."
+          subtitle="// rebased for clarity, not for vibes"
         />
         <TerminalWindow title="git log -- testimonials/" variant="log">
           <div className="bg-term-bg p-5 font-mono text-sm">
@@ -1018,8 +1021,8 @@ function Pricing() {
         <SectionHeader
           file="billing/plans.toml"
           icon="¤"
-          title="Pricing — npm-style."
-          subtitle="// no usage based billing for feelings (yet)"
+          title="Pricing — npm style"
+          subtitle="// no usage-based billing for feelings (yet)"
         />
         <div className="grid gap-6 md:grid-cols-2">
           {/* free */}
@@ -1029,14 +1032,14 @@ function Pricing() {
                 <span className="text-2xl font-bold text-term-green">free</span>
                 <span className="text-term-dim">$0/forever</span>
               </div>
-              <div className="mt-1 text-xs text-term-dim">// for the brokenly single</div>
+              <div className="mt-1 text-xs text-term-dim">// for the certified broke + single</div>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
-                  "Unlimited matchmaking",
-                  "Daytona workspaces",
-                  "AI fallback",
-                  "Shared terminal",
-                  "Unlimited emotional damage",
+                  "Unlimited matches (allegedly)",
+                  "Real Daytona workspaces",
+                  "AI gf if nobody's online",
+                  "Shared tmux session",
+                  "Free emotional damage",
                 ].map((x) => (
                   <li key={x} className="flex gap-2">
                     <span className="text-term-green">✓</span>
@@ -1045,7 +1048,7 @@ function Pricing() {
                 ))}
                 <li className="flex gap-2 text-term-dim">
                   <span className="text-term-red">✗</span>
-                  no guarantees
+                  zero guarantees. cope is on you.
                 </li>
               </ul>
               <a
@@ -1063,20 +1066,20 @@ function Pricing() {
           <TerminalWindow title="gitlaid-plus-plus.plan">
             <div className="relative overflow-hidden bg-term-bg p-6 font-mono">
               <div className="absolute right-3 top-3 rounded-sm border border-term-pink/40 bg-term-pink/10 px-2 py-0.5 text-[10px] text-term-pink">
-                anime mode
+                sigma tier
               </div>
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-bold text-term-pink glow-pink">GitLaid++</span>
                 <span className="text-term-dim">$9/month</span>
               </div>
-              <div className="mt-1 text-xs text-term-dim">// for the chronically online</div>
+              <div className="mt-1 text-xs text-term-dim">// for the chronically online · gigachad mode</div>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
-                  ["Priority queue", "skip the line"],
-                  ["Custom AI personalities", "build your dream catgirl"],
+                  ["Priority queue", "skip the cope line"],
+                  ["Custom AI personas", "build your dream catgirl"],
                   ["Anime mode", "uwu rendered server-side"],
-                  ["Extra Copium", "1TB/month"],
-                  ["Encrypted DMs", "PGP or it didn't happen"],
+                  ["Unlimited copium", "stream it, baby"],
+                  ["PGP-encrypted DMs", "or it didn't happen"],
                 ].map(([t, sub]) => (
                   <li key={t} className="flex gap-2">
                     <span className="text-term-pink">✓</span>
@@ -1105,14 +1108,13 @@ function Pricing() {
 /* ─────────────────────────────────────────── FAQ ─────────────────────────────────────────── */
 
 const FAQ = [
-  ["Does it work?", "```\nWorks on my machine.\n```"],
-  ["Can I meet real people?", "If they're online. Variance is part of the charm."],
-  [
-    "What if nobody is online?",
-    "We'll provision an AI that pretends to enjoy talking about Kubernetes.",
-  ],
-  ["Can women use it?", "Absolutely. Everyone is welcome. Trans rights = http 200."],
-  ["Is this serious?", "Only the networking layer."],
+  ["Wait — is this actually a dating app?", "Yes. You `ssh` into a Daytona box, get dropped in a shared `tmux` with another dev for 5 minutes, and either both press Y or you `dilate` and respawn."],
+  ["Do I need to install anything?", "Nope. One terminal command. Daytona handles the workspace. We handle the matchmaking. You handle the cope."],
+  ["Why a terminal instead of an app?", "Because if you can't `ssh`, you're not our demographic, king."],
+  ["What if no one is online?", "An AI gf spawns. She's blackpilled, knows your stack, and will roast your dotfiles. It's healing."],
+  ["Can women actually use this?", "Yes. All foids, theyfabs, gigastacies and gymcels welcome. Trans rights = HTTP 200. Bigots get `127.0.0.1` routed to /dev/null."],
+  ["Is this serious?", "Only the networking layer. Everything else is pure copium."],
+  ["I'm scared.", "Skill issue. `chmod +x ./yourself` and try again."],
 ];
 
 function FAQSection() {
@@ -1123,7 +1125,7 @@ function FAQSection() {
         <SectionHeader
           file="docs/FAQ.md"
           icon="?"
-          title="Frequently asked, rarely answered."
+          title="Asked frequently. Coped through completely."
         />
         <div className="term-panel divide-y divide-term-border">
           {FAQ.map(([q, a], i) => (
@@ -1213,20 +1215,22 @@ function Readme() {
 /* ─────────────────────────────────────────── easter egg marquee ─────────────────────────────────────────── */
 
 const EGGS = [
-  "git merge relationship → CONFLICT: automatic merge failed",
-  "npm install confidence → ERR_DEPENDENCY_MISSING",
-  "Connection closed by remote host.",
-  "Segmentation fault (core dumped) — heart broke unexpectedly",
-  "sudo rm -rf /loneliness",
-  "ssh crush@love.dev → Permission denied (publickey).",
+  "git merge relationship → CONFLICT: she has standards",
+  "npm install confidence → ERR_DEPENDENCY_MISSING (have you tried the gym?)",
+  "Connection closed by remote host. (she blocked you)",
+  "Segmentation fault (core dumped) — heart broke in O(1)",
+  "sudo rm -rf /loneliness → operation not permitted",
+  "ssh crush@love.dev → Permission denied (publickey). it's so over",
   "git checkout girlfriend → error: pathspec 'girlfriend' did not match any branch",
-  "docker compose up relationship → Container exited with code 1",
-  "curl https://love.dev → HTTP 418 I'm a teapot",
-  "git push origin feelings → remote: rejected",
-  "git pull origin relationship → Already up to date. Unfortunately.",
-  "find ~/ -name girlfriend → No results found",
+  "docker compose up relationship → Container exited (code 1, no rizz)",
+  "curl https://love.dev → HTTP 418 I'm a teapot, you're a beta",
+  "git push origin feelings → remote: rejected (you must be 6ft+)",
+  "git pull origin relationship → Already up to date. Unfortunately, single.",
+  "find ~/ -name girlfriend → 0 results · 1 ai gf",
   "ping emotional-stability.dev → Destination host unreachable",
-  "ssh hackathon@daytona.dev → Welcome back. Still single?",
+  "ssh hackathon@daytona.dev → wb king. still single?",
+  "vim her_heart → E45: 'readonly' option is set (add ! to override)",
+  "rm -rf ~/cope && touch grass → command not found: grass",
 ];
 
 function EasterEggTicker() {
@@ -1257,10 +1261,10 @@ function Footer() {
             <div className="text-term-fg">On branch <span className="text-term-green">main</span></div>
             <div className="text-term-dim">Your branch is up to date with 'origin/main'.</div>
             <div className="mt-1">nothing to commit, working tree clean</div>
-            <div className="mt-1 text-term-pink glow-pink">still single</div>
+            <div className="mt-1 text-term-pink glow-pink">still single (for now)</div>
             <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-term-border pt-4 text-xs text-term-dim">
               <span>© {new Date().getFullYear()} GitLaid Inc.</span>
-              <span>// not affiliated with your therapist</span>
+              <span>// powered by Daytona · not affiliated with your therapist</span>
               <div className="flex-1" />
               <a href="#" className="hover:text-term-green">github</a>
               <a href="#" className="hover:text-term-green">/docs</a>
