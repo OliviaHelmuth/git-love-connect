@@ -1473,20 +1473,10 @@ function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
 function GitLaidLanding() {
   const [status, setStatus] = useState("checking daytona");
   const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
-  const [nativeTerminalResult, setNativeTerminalResult] = useState<NativeTerminalResult | null>(null);
+
   const launchTerminal = () => {
-    launchNativeTerminal()
-      .then((result) => {
-        setNativeTerminalResult(result);
-        if (!result.ok) setHealthTerminalOpen(true);
-      })
-      .catch((error) => {
-        setNativeTerminalResult({
-          ok: false,
-          message: error instanceof Error ? error.message : "Terminal launch failed.",
-        });
-        setHealthTerminalOpen(true);
-      });
+    navigator.clipboard.writeText(DAYTONA_TERMINAL_COMMAND).catch(() => {});
+    setHealthTerminalOpen(true);
   };
 
   useEffect(() => {
@@ -1520,7 +1510,6 @@ function GitLaidLanding() {
       <StatusBar />
       <ConnectTerminal
         open={healthTerminalOpen}
-        launchResult={nativeTerminalResult}
         onClose={() => setHealthTerminalOpen(false)}
       />
     </div>
