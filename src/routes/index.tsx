@@ -28,7 +28,10 @@ const DAYTONA_URL =
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
 
 function MatrixRain() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const cols = useMemo(() => {
+    if (!mounted) return [] as { left: number; delay: number; dur: number; chars: string }[];
     const arr: { left: number; delay: number; dur: number; chars: string }[] = [];
     const glyphs = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ$#%&@*!?<>+={}[]";
     for (let i = 0; i < 28; i++) {
@@ -42,7 +45,7 @@ function MatrixRain() {
       });
     }
     return arr;
-  }, []);
+  }, [mounted]);
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.08]">
       {cols.map((c, i) => (
