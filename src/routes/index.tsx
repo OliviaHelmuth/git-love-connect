@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Typewriter } from "@/components/Typewriter";
 import { TerminalWindow } from "@/components/TerminalWindow";
@@ -22,10 +23,207 @@ export const Route = createFileRoute("/")({
   component: GitLaidLanding,
 });
 
-const DAYTONA_URL =
-  "https://8000-839f8b4c-960f-4a90-9b60-a431090a7dc6.proxy.daytona.work";
+const DAYTONA_URL = "https://8000-839f8b4c-960f-4a90-9b60-a431090a7dc6.proxy.daytona.work";
+const DAYTONA_CONNECT_URL = `${DAYTONA_URL}/connect`;
+const DAYTONA_CONNECT_PAYLOAD = { harness_id: "warp_olivia_helmuth_001" };
+const DAYTONA_TERMINAL_COMMAND = [
+  `curl -sS -X POST '${DAYTONA_CONNECT_URL}' \\`,
+  "  -H 'Content-Type: application/json' \\",
+  `  -d '${JSON.stringify(DAYTONA_CONNECT_PAYLOAD)}'`,
+].join("\n");
+
+const connectDaytonaHarness = createServerFn({ method: "POST" }).handler(async () => {
+  const startedAt = Date.now();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+
+  try {
+    const response = await fetch(DAYTONA_CONNECT_URL, {
+      method: "POST",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(DAYTONA_CONNECT_PAYLOAD),
+      signal: controller.signal,
+    });
+    const body = await response.text();
+
+    return {
+      ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
+      body: body.slice(0, 1600),
+      elapsedMs: Date.now() - startedAt,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      status: 0,
+      statusText: "request failed",
+      body: error instanceof Error ? error.message : "Unknown error",
+      elapsedMs: Date.now() - startedAt,
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+});
+
+const launchNativeTerminal = createServerFn({ method: "POST" }).handler(async () => {
+  const runtime = globalThis as typeof globalThis & {
+    process?: { platform?: string };
+  };
+
+  if (runtime.process?.platform !== "darwin") {
+    return {
+      ok: false,
+      message: "Native Terminal launch is only available from the local macOS dev server.",
+    };
+  }
+
+  const appleScript = [
+    'tell application "Terminal"',
+    "activate",
+    `do script ${JSON.stringify(DAYTONA_TERMINAL_COMMAND)}`,
+    "end tell",
+  ].join("\n");
+
+  try {
+    const { execFile } = await import("node:child_process");
+    const { promisify } = await import("node:util");
+    const execFileAsync = promisify(execFile);
+
+    await execFileAsync("osascript", ["-e", appleScript], {
+      timeout: 5000,
+    });
+
+    return {
+      ok: true,
+      message: `Opened Terminal with: ${DAYTONA_TERMINAL_COMMAND}`,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Terminal launch failed.",
+    };
+  }
+});
 
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
+
+type ConnectResult = Awaited<ReturnType<typeof connectDaytonaHarness>>;
+type NativeTerminalResult = Awaited<ReturnType<typeof launchNativeTerminal>>;
+
+function ConnectTerminal({
+  open,
+  launchResult,
+  onClose,
+}: {
+  open: boolean;
+  launchResult: NativeTerminalResult | null;
+  onClose: () => void;
+}) {
+  const [result, setResult] = useState<ConnectResult | null>(null);
+  const [running, setRunning] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    let ignore = false;
+    setResult(null);
+    setRunning(true);
+    connectDaytonaHarness()
+      .then((nextResult) => {
+        if (!ignore) setResult(nextResult);
+      })
+      .catch((error) => {
+        if (!ignore) {
+          setResult({
+            ok: false,
+            status: 0,
+            statusText: "terminal crashed",
+            body: error instanceof Error ? error.message : "Unknown error",
+            elapsedMs: 0,
+          });
+        }
+      })
+      .finally(() => {
+        if (!ignore) setRunning(false);
+      });
+
+    return () => {
+      ignore = true;
+    };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [onClose, open]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-term-bg/80 px-4 py-10 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="GitLaid connect terminal"
+      onClick={onClose}
+    >
+      <div className="w-full max-w-3xl" onClick={(event) => event.stopPropagation()}>
+        <TerminalWindow title="zsh — gitlaid connect" variant="log">
+          <div className="min-h-[320px] bg-term-bg p-5">
+            <div className="mb-4 flex items-center justify-between border-b border-term-border pb-3 text-xs text-term-dim">
+              <span>daytona harness connect</span>
+              <button
+                type="button"
+                onClick={onClose}
+                className="text-term-dim transition hover:text-term-pink"
+              >
+                x
+              </button>
+            </div>
+            <div className="space-y-2 font-mono text-sm">
+              {launchResult && !launchResult.ok && (
+                <div className="rounded border border-term-yellow/30 bg-term-yellow/10 p-3 text-xs text-term-yellow">
+                  native terminal failed: {launchResult.message}
+                </div>
+              )}
+              <div>
+                <span className="text-term-green">$</span> {DAYTONA_TERMINAL_COMMAND}
+              </div>
+              {running && (
+                <>
+                  <div className="text-term-dim">connecting to proxy...</div>
+                  <span className="caret" />
+                </>
+              )}
+              {result && (
+                <>
+                  <div className={result.ok ? "text-term-green" : "text-term-red"}>
+                    HTTP {result.status || "ERR"} {result.statusText} ({result.elapsedMs}ms)
+                  </div>
+                  <pre className="max-h-48 overflow-auto rounded border border-term-border bg-term-panel-2 p-3 text-xs text-term-fg">
+                    {result.body || "(empty response)"}
+                  </pre>
+                  <div className={result.ok ? "text-term-green" : "text-term-red"}>
+                    process exited with code {result.ok ? 0 : 1}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </TerminalWindow>
+      </div>
+    </div>
+  );
+}
 
 function MatrixRain() {
   const [mounted, setMounted] = useState(false);
@@ -166,7 +364,7 @@ function BootSequence({ onDone }: { onDone?: () => void }) {
   );
 }
 
-function Hero() {
+function Hero({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
   const [bootDone, setBootDone] = useState(false);
   return (
     <section className="relative overflow-hidden border-b border-term-border">
@@ -196,16 +394,15 @@ function Hero() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <a
-              href={DAYTONA_URL}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={onLaunchTerminal}
               className="group relative inline-flex items-center gap-2 rounded-md border border-term-green/40 bg-term-green/10 px-5 py-3 font-mono text-term-green transition hover:bg-term-green/20 hover:shadow-[0_0_30px_-5px_rgb(74_222_128/0.6)]"
             >
               <span className="text-term-green">$</span>
               <span className="font-bold">ssh gitlaid (ascend)</span>
               <span className="ml-1 opacity-60 group-hover:opacity-100">→</span>
-            </a>
+            </button>
             <a
               href="#how"
               className="inline-flex items-center gap-2 rounded-md border border-term-border bg-term-panel px-5 py-3 font-mono text-term-fg transition hover:border-term-blue hover:text-term-blue"
@@ -1249,7 +1446,7 @@ function EasterEggTicker() {
   );
 }
 
-function Footer() {
+function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
   return (
     <footer className="bg-term-bg py-12">
       <div className="mx-auto max-w-7xl px-4">
@@ -1269,14 +1466,13 @@ function Footer() {
               <a href="#" className="hover:text-term-green">github</a>
               <a href="#" className="hover:text-term-green">/docs</a>
               <a href="#" className="hover:text-term-green">man gitlaid</a>
-              <a
-                href={DAYTONA_URL}
-                target="_blank"
-                rel="noreferrer"
+              <button
+                type="button"
+                onClick={onLaunchTerminal}
                 className="text-term-green hover:text-term-pink"
               >
                 ssh gitlaid.dev ↗
-              </a>
+              </button>
             </div>
           </div>
         </TerminalWindow>
@@ -1297,6 +1493,23 @@ function Footer() {
 
 function GitLaidLanding() {
   const [status, setStatus] = useState("checking daytona");
+  const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
+  const [nativeTerminalResult, setNativeTerminalResult] = useState<NativeTerminalResult | null>(null);
+  const launchTerminal = () => {
+    launchNativeTerminal()
+      .then((result) => {
+        setNativeTerminalResult(result);
+        if (!result.ok) setHealthTerminalOpen(true);
+      })
+      .catch((error) => {
+        setNativeTerminalResult({
+          ok: false,
+          message: error instanceof Error ? error.message : "Terminal launch failed.",
+        });
+        setHealthTerminalOpen(true);
+      });
+  };
+
   useEffect(() => {
     // best-effort liveness check — falls back gracefully (sandbox is usually asleep)
     const ctrl = new AbortController();
@@ -1310,7 +1523,7 @@ function GitLaidLanding() {
   return (
     <div className="min-h-screen bg-term-bg pb-8 text-term-fg flicker noise">
       <TopBar status={status} />
-      <Hero />
+      <Hero onLaunchTerminal={launchTerminal} />
       <EasterEggTicker />
       <LiveDemo />
       <HowItWorks />
@@ -1324,8 +1537,13 @@ function GitLaidLanding() {
       <FAQSection />
       <Readme />
       <EasterEggTicker />
-      <Footer />
+      <Footer onLaunchTerminal={launchTerminal} />
       <StatusBar />
+      <ConnectTerminal
+        open={healthTerminalOpen}
+        launchResult={nativeTerminalResult}
+        onClose={() => setHealthTerminalOpen(false)}
+      />
     </div>
   );
 }
