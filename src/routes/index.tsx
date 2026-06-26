@@ -376,10 +376,11 @@ function Hero({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
             <button
               type="button"
               onClick={onLaunchTerminal}
-              className="group relative inline-flex items-center gap-2 rounded-md border border-term-green/40 bg-term-green/10 px-5 py-3 font-mono text-term-green transition hover:bg-term-green/20 hover:shadow-[0_0_30px_-5px_rgb(74_222_128/0.6)]"
+              className="group relative inline-flex items-center gap-2 rounded-md border border-term-green/40 bg-term-green/10 px-4 py-3 font-mono text-sm text-term-green transition hover:bg-term-green/20 hover:shadow-[0_0_30px_-5px_rgb(74_222_128/0.6)]"
+              title="Copy the curl command to connect to your Daytona harness"
             >
               <span className="text-term-green">$</span>
-              <span className="font-bold">ssh gitlaid (ascend)</span>
+              <span className="font-bold">curl -sS .../connect</span>
               <span className="ml-1 opacity-60 group-hover:opacity-100">→</span>
             </button>
             <a
