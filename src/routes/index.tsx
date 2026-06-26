@@ -1108,14 +1108,13 @@ function Pricing() {
 /* ─────────────────────────────────────────── FAQ ─────────────────────────────────────────── */
 
 const FAQ = [
-  ["Does it work?", "```\nWorks on my machine.\n```"],
-  ["Can I meet real people?", "If they're online. Variance is part of the charm."],
-  [
-    "What if nobody is online?",
-    "We'll provision an AI that pretends to enjoy talking about Kubernetes.",
-  ],
-  ["Can women use it?", "Absolutely. Everyone is welcome. Trans rights = http 200."],
-  ["Is this serious?", "Only the networking layer."],
+  ["Wait — is this actually a dating app?", "Yes. You `ssh` into a Daytona box, get dropped in a shared `tmux` with another dev for 5 minutes, and either both press Y or you `dilate` and respawn."],
+  ["Do I need to install anything?", "Nope. One terminal command. Daytona handles the workspace. We handle the matchmaking. You handle the cope."],
+  ["Why a terminal instead of an app?", "Because if you can't `ssh`, you're not our demographic, king."],
+  ["What if no one is online?", "An AI gf spawns. She's blackpilled, knows your stack, and will roast your dotfiles. It's healing."],
+  ["Can women actually use this?", "Yes. All foids, theyfabs, gigastacies and gymcels welcome. Trans rights = HTTP 200. Bigots get `127.0.0.1` routed to /dev/null."],
+  ["Is this serious?", "Only the networking layer. Everything else is pure copium."],
+  ["I'm scared.", "Skill issue. `chmod +x ./yourself` and try again."],
 ];
 
 function FAQSection() {
@@ -1126,7 +1125,7 @@ function FAQSection() {
         <SectionHeader
           file="docs/FAQ.md"
           icon="?"
-          title="Frequently asked, rarely answered."
+          title="Asked frequently. Coped through completely."
         />
         <div className="term-panel divide-y divide-term-border">
           {FAQ.map(([q, a], i) => (
