@@ -69,15 +69,58 @@ const connectDaytonaHarness = createServerFn({ method: "POST" }).handler(async (
   }
 });
 
+const launchNativeTerminal = createServerFn({ method: "POST" }).handler(async () => {
+  const runtime = globalThis as typeof globalThis & {
+    process?: { platform?: string };
+  };
+
+  if (runtime.process?.platform !== "darwin") {
+    return {
+      ok: false,
+      message: "Native Terminal launch is only available from the local macOS dev server.",
+    };
+  }
+
+  const appleScript = [
+    'tell application "Terminal"',
+    "activate",
+    `do script ${JSON.stringify(DAYTONA_TERMINAL_COMMAND)}`,
+    "end tell",
+  ].join("\n");
+
+  try {
+    const { execFile } = await import("node:child_process");
+    const { promisify } = await import("node:util");
+    const execFileAsync = promisify(execFile);
+
+    await execFileAsync("osascript", ["-e", appleScript], {
+      timeout: 5000,
+    });
+
+    return {
+      ok: true,
+      message: "Opened Terminal.",
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Terminal launch failed.",
+    };
+  }
+});
+
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
 
 type ConnectResult = Awaited<ReturnType<typeof connectDaytonaHarness>>;
+type NativeTerminalResult = Awaited<ReturnType<typeof launchNativeTerminal>>;
 
 function ConnectTerminal({
   open,
+  launchResult,
   onClose,
 }: {
   open: boolean;
+  launchResult: NativeTerminalResult | null;
   onClose: () => void;
 }) {
   const [result, setResult] = useState<ConnectResult | null>(null);
@@ -158,9 +201,11 @@ function ConnectTerminal({
               </button>
             </div>
             <div className="space-y-2 font-mono text-sm">
-              <div className="rounded border border-term-blue/30 bg-term-blue/10 p-3 text-xs text-term-blue">
-                Running curl against the Daytona harness. Output streams below — also copied to your clipboard so you can paste into a real terminal.
-              </div>
+              {launchResult && !launchResult.ok && (
+                <div className="rounded border border-term-yellow/30 bg-term-yellow/10 p-3 text-xs text-term-yellow">
+                  native terminal failed: {launchResult.message}
+                </div>
+              )}
 
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 overflow-x-auto whitespace-pre text-term-fg">
@@ -380,10 +425,10 @@ function Hero({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
               type="button"
               onClick={onLaunchTerminal}
               className="group relative inline-flex items-center gap-2 rounded-md border border-term-green/40 bg-term-green/10 px-4 py-3 font-mono text-sm text-term-green transition hover:bg-term-green/20 hover:shadow-[0_0_30px_-5px_rgb(74_222_128/0.6)]"
-              title="Copy the curl command to connect to your Daytona harness"
+              title="Open Terminal and connect to your Daytona harness"
             >
               <span className="text-term-green">$</span>
-              <span className="font-bold">curl -sS .../connect</span>
+              <span className="font-bold">ssh gitlaid (ascend)</span>
               <span className="ml-1 opacity-60 group-hover:opacity-100">→</span>
             </button>
             <a
@@ -1451,9 +1496,9 @@ function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
                 type="button"
                 onClick={onLaunchTerminal}
                 className="text-term-green hover:text-term-pink"
-                title="Copy the curl command to connect to your Daytona harness"
+                title="Open Terminal and connect to your Daytona harness"
               >
-                curl .../connect ↗
+                ssh gitlaid.dev ↗
               </button>
             </div>
           </div>
@@ -1476,11 +1521,21 @@ function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
 function GitLaidLanding() {
   const [status, setStatus] = useState("checking daytona");
   const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
+  const [nativeTerminalResult, setNativeTerminalResult] = useState<NativeTerminalResult | null>(null);
 
   const launchTerminal = () => {
-    // execute the curl directly via server fn and stream output into the in-page terminal
-    navigator.clipboard.writeText(DAYTONA_TERMINAL_COMMAND).catch(() => {});
-    setHealthTerminalOpen(true);
+    launchNativeTerminal()
+      .then((result) => {
+        setNativeTerminalResult(result);
+        if (!result.ok) setHealthTerminalOpen(true);
+      })
+      .catch((error) => {
+        setNativeTerminalResult({
+          ok: false,
+          message: error instanceof Error ? error.message : "Terminal launch failed.",
+        });
+        setHealthTerminalOpen(true);
+      });
   };
 
 
@@ -1522,6 +1577,7 @@ function GitLaidLanding() {
       <StatusBar />
       <ConnectTerminal
         open={healthTerminalOpen}
+        launchResult={nativeTerminalResult}
         onClose={() => setHealthTerminalOpen(false)}
       />
     </div>
