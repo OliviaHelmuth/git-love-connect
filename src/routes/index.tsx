@@ -391,13 +391,13 @@ function SectionHeader({
 /* ─────────────────────────────────────────── how it works ─────────────────────────────────────────── */
 
 const STEPS = [
-  ["Connect", "ssh into gitlaid.dev"],
-  ["Provision Daytona Workspace", "ephemeral, isolated, horny"],
-  ["Random Match", "queue.pop() or spawnAI()"],
-  ["5 Minute Terminal Chat", "tmux session, 2 humans, 0 filters"],
-  ["/git commit", "commit to the bit"],
-  ["Exchange usernames", "github > insta"],
-  ["Maybe touch grass together", "optional flag"],
+  ["ssh in", "no app. no profile pic. mog the algorithm."],
+  ["Daytona spins your box", "ephemeral, isolated, slightly horny"],
+  ["Random match", "queue.pop() or, if it's over, spawnAI()"],
+  ["5 min in shared tmux", "two devs. one terminal. zero filters."],
+  ["/git commit", "both press Y or it never happened"],
+  ["Swap @handles", "github > insta. always."],
+  ["Touch grass (optional)", "advanced users only"],
 ];
 
 function HowItWorks() {
@@ -407,8 +407,8 @@ function HowItWorks() {
         <SectionHeader
           file="docs/HOW_IT_WORKS.md"
           icon="#"
-          title="The pipeline."
-          subtitle="// it's just a CI/CD job for your love life"
+          title="How you cope."
+          subtitle="// it's just CI/CD for your love life"
         />
         <div className="term-panel scanlines overflow-hidden">
           <div className="flex items-center justify-between border-b border-term-border bg-term-panel-2 px-3 py-2 text-xs">
