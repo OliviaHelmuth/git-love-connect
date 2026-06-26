@@ -1663,29 +1663,13 @@ function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
 function GitLaidLanding() {
   const [status, setStatus] = useState("checking daytona");
   const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
-  const [nativeTerminalResult, setNativeTerminalResult] = useState<NativeTerminalResult | null>(null);
 
-  const launchTerminal = () => {
-    launchNativeTerminal()
-      .then((result) => {
-        setNativeTerminalResult(result);
-        if (!result.ok) setHealthTerminalOpen(true);
-      })
-      .catch((error) => {
-        setNativeTerminalResult({
-          ok: false,
-          message: error instanceof Error ? error.message : "Terminal launch failed.",
-        });
-        setHealthTerminalOpen(true);
-      });
-  };
-
+  const launchTerminal = () => setHealthTerminalOpen(true);
 
   useEffect(() => {
     const handler = () => launchTerminal();
     window.addEventListener("gitlaid:launch", handler);
     return () => window.removeEventListener("gitlaid:launch", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -1719,7 +1703,6 @@ function GitLaidLanding() {
       <StatusBar />
       <ConnectTerminal
         open={healthTerminalOpen}
-        launchResult={nativeTerminalResult}
         onClose={() => setHealthTerminalOpen(false)}
       />
     </div>
