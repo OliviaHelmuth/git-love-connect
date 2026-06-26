@@ -1215,20 +1215,22 @@ function Readme() {
 /* ─────────────────────────────────────────── easter egg marquee ─────────────────────────────────────────── */
 
 const EGGS = [
-  "git merge relationship → CONFLICT: automatic merge failed",
-  "npm install confidence → ERR_DEPENDENCY_MISSING",
-  "Connection closed by remote host.",
-  "Segmentation fault (core dumped) — heart broke unexpectedly",
-  "sudo rm -rf /loneliness",
-  "ssh crush@love.dev → Permission denied (publickey).",
+  "git merge relationship → CONFLICT: she has standards",
+  "npm install confidence → ERR_DEPENDENCY_MISSING (have you tried the gym?)",
+  "Connection closed by remote host. (she blocked you)",
+  "Segmentation fault (core dumped) — heart broke in O(1)",
+  "sudo rm -rf /loneliness → operation not permitted",
+  "ssh crush@love.dev → Permission denied (publickey). it's so over",
   "git checkout girlfriend → error: pathspec 'girlfriend' did not match any branch",
-  "docker compose up relationship → Container exited with code 1",
-  "curl https://love.dev → HTTP 418 I'm a teapot",
-  "git push origin feelings → remote: rejected",
-  "git pull origin relationship → Already up to date. Unfortunately.",
-  "find ~/ -name girlfriend → No results found",
+  "docker compose up relationship → Container exited (code 1, no rizz)",
+  "curl https://love.dev → HTTP 418 I'm a teapot, you're a beta",
+  "git push origin feelings → remote: rejected (you must be 6ft+)",
+  "git pull origin relationship → Already up to date. Unfortunately, single.",
+  "find ~/ -name girlfriend → 0 results · 1 ai gf",
   "ping emotional-stability.dev → Destination host unreachable",
-  "ssh hackathon@daytona.dev → Welcome back. Still single?",
+  "ssh hackathon@daytona.dev → wb king. still single?",
+  "vim her_heart → E45: 'readonly' option is set (add ! to override)",
+  "rm -rf ~/cope && touch grass → command not found: grass",
 ];
 
 function EasterEggTicker() {
