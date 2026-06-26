@@ -759,14 +759,14 @@ function AIMode() {
 /* ─────────────────────────────────────────── icebreakers ─────────────────────────────────────────── */
 
 const ICEBREAKERS = [
-  "What's your worst merge conflict?",
-  "Tabs or Spaces?",
+  "Tabs or spaces? (wrong answer = rope)",
+  "Last time you saw the sun?",
   "Rate Kubernetes from 1 to emotional damage.",
-  "What's your biggest production incident?",
-  "What's your favourite Linux distro?",
-  "What's your red flag?",
-  "How many hackathons have you won?",
-  "When was the last time you saw sunlight?",
+  "Worst prod incident — go.",
+  "Arch btw or Ubuntu cope?",
+  "Your biggest red flag in <80 cols.",
+  "How many hackathons before you ascend?",
+  "On a scale of 1 to gigachad, your `git blame` energy?",
 ];
 
 function Icebreakers() {
