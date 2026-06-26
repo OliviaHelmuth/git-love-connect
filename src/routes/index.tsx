@@ -70,45 +70,6 @@ const connectDaytonaHarness = createServerFn({ method: "POST" }).handler(async (
   }
 });
 
-const launchNativeTerminal = createServerFn({ method: "POST" }).handler(async () => {
-  const runtime = globalThis as typeof globalThis & {
-    process?: { platform?: string };
-  };
-
-  if (runtime.process?.platform !== "darwin") {
-    return {
-      ok: false,
-      message: "Native Terminal launch is only available from the local macOS dev server.",
-    };
-  }
-
-  const appleScript = [
-    'tell application "Terminal"',
-    "activate",
-    `do script ${JSON.stringify(DAYTONA_TERMINAL_COMMAND)}`,
-    "end tell",
-  ].join("\n");
-
-  try {
-    const { execFile } = await import("node:child_process");
-    const { promisify } = await import("node:util");
-    const execFileAsync = promisify(execFile);
-
-    await execFileAsync("osascript", ["-e", appleScript], {
-      timeout: 5000,
-    });
-
-    return {
-      ok: true,
-      message: "Opened Terminal.",
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Terminal launch failed.",
-    };
-  }
-});
 
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
 
