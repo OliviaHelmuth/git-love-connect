@@ -33,42 +33,6 @@ const DAYTONA_TERMINAL_COMMAND = [
   `  -d '${JSON.stringify(DAYTONA_CONNECT_PAYLOAD)}'`,
 ].join("\n");
 
-const connectDaytonaHarness = createServerFn({ method: "POST" }).handler(async () => {
-  const startedAt = Date.now();
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
-
-  try {
-    const response = await fetch(DAYTONA_CONNECT_URL, {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(DAYTONA_CONNECT_PAYLOAD),
-      signal: controller.signal,
-    });
-    const body = await response.text();
-
-    return {
-      ok: response.ok,
-      status: response.status,
-      statusText: response.statusText,
-      body: body.slice(0, 1600),
-      elapsedMs: Date.now() - startedAt,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      status: 0,
-      statusText: "request failed",
-      body: error instanceof Error ? error.message : "Unknown error",
-      elapsedMs: Date.now() - startedAt,
-    };
-  } finally {
-    clearTimeout(timeout);
-  }
-});
 
 
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
