@@ -1450,8 +1450,9 @@ function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
                 type="button"
                 onClick={onLaunchTerminal}
                 className="text-term-green hover:text-term-pink"
+                title="Copy the curl command to connect to your Daytona harness"
               >
-                ssh gitlaid.dev ↗
+                curl .../connect ↗
               </button>
             </div>
           </div>
