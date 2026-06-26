@@ -159,8 +159,9 @@ function ConnectTerminal({
             </div>
             <div className="space-y-2 font-mono text-sm">
               <div className="rounded border border-term-blue/30 bg-term-blue/10 p-3 text-xs text-term-blue">
-                Command copied to clipboard. Paste it into your terminal and press Enter.
+                Running curl against the Daytona harness. Output streams below — also copied to your clipboard so you can paste into a real terminal.
               </div>
+
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 overflow-x-auto whitespace-pre text-term-fg">
                   <span className="text-term-green">$</span> {DAYTONA_TERMINAL_COMMAND}
