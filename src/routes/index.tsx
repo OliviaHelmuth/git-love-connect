@@ -781,8 +781,8 @@ function Icebreakers() {
         <SectionHeader
           file="bin/icebreakers.sh"
           icon="❄"
-          title="Icebreakers, auto-piped."
-          subtitle="// no more 'hey :)'"
+          title="Auto-rizz, piped straight into the pty."
+          subtitle="// no more 'hey :)' — that's beta behavior"
         />
         <TerminalWindow title="bash — icebreakers.sh --random">
           <div className="grid gap-0 bg-term-bg md:grid-cols-2">
