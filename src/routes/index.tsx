@@ -820,13 +820,13 @@ function Icebreakers() {
 
 const STATS: { label: string; value: number | string; color: string; max?: number }[] = [
   { label: "git commits", value: 18, color: "var(--term-green)", max: 20 },
-  { label: "docker containers", value: 20, color: "var(--term-blue)", max: 20 },
-  { label: "coffee (cups)", value: 16, color: "var(--term-orange)", max: 20 },
+  { label: "open docker tabs", value: 20, color: "var(--term-blue)", max: 20 },
+  { label: "energy drinks", value: 16, color: "var(--term-orange)", max: 20 },
   { label: "sleep (hrs)", value: 2, color: "var(--term-purple)", max: 20 },
   { label: "vitamin D", value: 1, color: "var(--term-yellow)", max: 20 },
-  { label: "social skills", value: "Segmentation Fault", color: "var(--term-red)" },
-  { label: "dating experience", value: "404", color: "var(--term-red)" },
-  { label: "grass touches", value: "NULL", color: "var(--term-red)" },
+  { label: "rizz", value: "Segmentation Fault", color: "var(--term-red)" },
+  { label: "matches on tinder", value: "404", color: "var(--term-red)" },
+  { label: "times touched grass", value: "NULL", color: "var(--term-red)" },
 ];
 
 function Problem() {
@@ -836,8 +836,8 @@ function Problem() {
         <SectionHeader
           file="reports/avg-hackathon-dev.log"
           icon="⚠"
-          title="Average Hackathon Developer Stats"
-          subtitle="// taken at 04:27 AM. n=∞"
+          title="`htop` of the average hackathon dev"
+          subtitle="// snapshot @ 04:27 AM · n=∞ · over for codecels"
         />
         <TerminalWindow title="htop — devs.local" variant="log">
           <div className="bg-term-bg p-5 font-mono text-sm">
@@ -874,9 +874,9 @@ function Problem() {
         {/* Why GitLaid */}
         <div className="mt-10 grid gap-4 md:grid-cols-2">
           <div className="term-panel p-5">
-            <div className="mb-2 font-mono text-xs text-term-dim">// the old way</div>
+            <div className="mb-2 font-mono text-xs text-term-dim">// the cope you tried</div>
             <ul className="space-y-2 font-mono">
-              {["Endless swiping", "Instagram filters", "LinkedIn networking", "Small talk", "Awkward mixers"].map(
+              {["Swiping till your thumb breaks", "Instagram filters lying to you", "LinkedIn 'networking' (cringe)", "Small talk at meetups", "Awkward hackathon mixers"].map(
                 (x) => (
                   <li key={x} className="flex items-center gap-3 text-term-fg/70 line-through">
                     <span className="text-term-red">✗</span> {x}
@@ -886,14 +886,14 @@ function Problem() {
             </ul>
           </div>
           <div className="term-panel p-5">
-            <div className="mb-2 font-mono text-xs text-term-green">// gitlaid</div>
+            <div className="mb-2 font-mono text-xs text-term-green">// gitlaid (the ascension)</div>
             <ul className="space-y-2 font-mono">
               {[
-                "Shared terminal",
-                "Shared suffering",
-                "Shared Docker errors",
-                "Nerd humor",
-                "Actually talking",
+                "One shared terminal",
+                "Shared suffering = bonding",
+                "Mutual Docker trauma",
+                "Inside jokes in <80 cols",
+                "She might actually reply",
               ].map((x) => (
                 <li key={x} className="flex items-center gap-3 text-term-fg">
                   <span className="text-term-green">✓</span> {x}
