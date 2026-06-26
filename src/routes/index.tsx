@@ -241,15 +241,16 @@ function Hero() {
                 <pre className="rounded bg-term-panel-2 p-3 text-xs">
 {`{
   "handle":   "ashley.eth",
-  "role":     "Frontend Goblin",
-  "status":   "debugging CSS at 4am",
+  "role":     "Frontend gigastacy",
+  "status":   "fighting CSS at 4am",
   "distance": "2 latency-units away",
-  "vibes":    ["chaotic", "neutral", "vim"]
+  "vibes":    ["chaotic", "neutral", "vim"],
+  "willMog":  true
 }`}
                 </pre>
                 <div className="pt-2">
                   <span className="text-term-green">$</span>{" "}
-                  <Typewriter text="accept --partner ashley.eth" speed={45} />
+                  <Typewriter text="accept --partner ashley --cope=maximum" speed={45} />
                 </div>
               </div>
             )}
