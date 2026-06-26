@@ -738,7 +738,7 @@ function AIMode() {
                   >
                     AI
                   </span>
-                  <span className="font-mono text-[10px] text-term-dim">v0.{Math.floor(Math.random() * 9) + 1}</span>
+                  <span className="font-mono text-[10px] text-term-dim">v0.{(name.length % 9) + 1}</span>
                 </div>
                 <div className="font-mono text-base font-bold text-term-fg">{name}</div>
                 <div className="font-mono text-xs text-term-dim">// {sub}</div>
