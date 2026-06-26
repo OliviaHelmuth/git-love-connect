@@ -264,19 +264,19 @@ function Hero() {
 /* ─────────────────────────────────────────── live demo ─────────────────────────────────────────── */
 
 const DEMO_SCRIPT: { side: "you" | "ash" | "sys" | "cmd"; text: string; delay?: number }[] = [
-  { side: "cmd", text: "$ gitlaid connect" },
-  { side: "sys", text: "▸ Connecting to Daytona..." },
-  { side: "sys", text: "▸ Workspace created  ✓" },
-  { side: "sys", text: "▸ Searching..." },
-  { side: "sys", text: "▸ Searching..." },
-  { side: "sys", text: "▸ Searching..." },
-  { side: "sys", text: "▸ Found: Ashley  ·  Frontend Goblin  ·  debugging CSS" },
+  { side: "cmd", text: "$ ssh gitlaid" },
+  { side: "sys", text: "▸ Daytona spinning up your cope-box..." },
+  { side: "sys", text: "▸ Workspace ready  ✓" },
+  { side: "sys", text: "▸ Looking for a foid..." },
+  { side: "sys", text: "▸ Looking for a foid..." },
+  { side: "sys", text: "▸ Looking for a foid..." },
+  { side: "sys", text: "▸ Found: Ashley · Stacy.exe · 8/10 (mogs you)" },
   { side: "cmd", text: "Accept? (Y/n)  Y" },
-  { side: "sys", text: "✓ entering shared tmux session..." },
+  { side: "sys", text: "✓ entering shared tmux. don't be weird." },
   { side: "ash", text: "tabs?" },
   { side: "you", text: "spaces." },
-  { side: "sys", text: "✗ ashley disconnected. (reason: tabs)" },
-  { side: "cmd", text: "$ gitlaid retry --with-empathy" },
+  { side: "sys", text: "✗ ashley dipped. (reason: tabs · over for spacecels)" },
+  { side: "cmd", text: "$ gitlaid retry --plead" },
 ];
 
 function LiveDemo() {
