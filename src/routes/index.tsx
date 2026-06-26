@@ -676,32 +676,32 @@ function paint(line: string): ReactNode {
 /* ─────────────────────────────────────────── AI mode ─────────────────────────────────────────── */
 
 const PERSONAS = [
-  ["Linux Goth Girl", "/etc/eyeliner.conf", "var(--term-purple)"],
-  ["Senior Rust Engineer", "borrow checker certified", "var(--term-orange)"],
-  ["Catgirl Compiler", "nya: error E0382", "var(--term-pink)"],
-  ["Vim Wizard", ":wq into my heart", "var(--term-green)"],
-  ["Docker Princess", "single layer, no drama", "var(--term-blue)"],
-  ["GPU Mommy", "cuda://yes", "var(--term-pink)"],
-  ["Caffeine AI", "Club Mate IV drip", "var(--term-yellow)"],
-  ["TypeScript Therapist", "any feelings allowed", "var(--term-cyan)"],
+  ["Linux Goth Girl", "/etc/eyeliner.conf — will mog you in arch", "var(--term-purple)"],
+  ["Senior Rust GigaChad", "borrow-checker certified · 6'4\" type system", "var(--term-orange)"],
+  ["Catgirl Compiler", "nya: error E0382 — borrowed your heart", "var(--term-pink)"],
+  ["Vim Wizard", ":wq into my dms", "var(--term-green)"],
+  ["Docker Stacy", "single layer, no drama, no exes", "var(--term-blue)"],
+  ["GPU Mommy", "cuda://yes daddy", "var(--term-pink)"],
+  ["Caffeine AI", "Club Mate IV drip · blackpilled", "var(--term-yellow)"],
+  ["TypeScript Therapist", "tell me about your `any`", "var(--term-cyan)"],
 ] as const;
 
 function AIMode() {
   const lines = [
-    "▸ no humans in queue",
-    "▸ Deploying AI...",
-    "▸ Loading personality...",
-    "▸ Injecting sarcasm... [▓▓▓▓▓▓▓▓▓▓] 100%",
-    "▸ Done.",
+    "▸ 0 stacies in queue. it is over.",
+    "▸ Deploying AI gf...",
+    "▸ Loading personality.json...",
+    "▸ Injecting sass + slight contempt... [▓▓▓▓▓▓▓▓▓▓] 100%",
+    "▸ Ready. she's already disappointed.",
   ];
   return (
     <section id="ai" className="border-b border-term-border py-16">
       <div className="mx-auto max-w-7xl px-4">
         <SectionHeader
-          file="services/ai-emergency-date.service"
+          file="services/ai-emergency-gf.service"
           icon="✦"
-          title="AI Emergency Date™"
-          subtitle="// when the queue is empty, the gpus aren't"
+          title="AI Emergency Girlfriend™"
+          subtitle="// queue is empty. the GPUs are not. ascend anyway."
         />
         <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
           <TerminalWindow title="systemd[1] gitlaid-ai.service">
