@@ -1230,14 +1230,13 @@ function Pricing() {
                   zero guarantees. cope is on you.
                 </li>
               </ul>
-              <a
-                href={DAYTONA_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-6 block rounded border border-term-green/40 bg-term-green/10 px-4 py-2 text-center text-term-green hover:bg-term-green/20"
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event("gitlaid:launch"))}
+                className="mt-6 block w-full rounded border border-term-green/40 bg-term-green/10 px-4 py-2 text-center text-term-green hover:bg-term-green/20"
               >
                 $ gitlaid install --free
-              </a>
+              </button>
             </div>
           </TerminalWindow>
 
