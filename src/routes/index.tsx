@@ -41,6 +41,43 @@ type LogLine = { kind: "sys" | "bot" | "user" | "ok" | "err" | "dim"; text: stri
 
 const WS_URL = DAYTONA_URL.replace(/^http/, "ws") + "/ws";
 
+type FakeMatch = { handle: string; compat: string; role: string; stack: string; vibe: string; bio: string };
+const FAKE_MATCHES: FakeMatch[] = [
+  {
+    handle: "@segfault_sweetie",
+    compat: "98% match",
+    role: "rust gf · arch btw",
+    stack: "rust, nix, vim motions in bed",
+    vibe: "will rewrite your heart in rust",
+    bio: "looking for someone with O(1) emotions",
+  },
+  {
+    handle: "@gpu_mommy_42",
+    compat: "94% match",
+    role: "ml researcher · 8x H100s",
+    stack: "pytorch, cuda, attention is all u need",
+    vibe: "she'll fine-tune you",
+    bio: "my loss function is you not texting back",
+  },
+  {
+    handle: "@kernel_panic_kate",
+    compat: "87% match",
+    role: "linux goth · daemon enjoyer",
+    stack: "c, assembly, eyeliner",
+    vibe: "sudo rm -rf your ex",
+    bio: "i mount your /heart read-write",
+  },
+  {
+    handle: "@tabs_over_spaces",
+    compat: "71% match",
+    role: "frontend gigastacy",
+    stack: "next.js, tailwind, daddy issues",
+    vibe: "will commit and never push",
+    bio: "swipe right if your prettier config is correct",
+  },
+];
+
+
 function ConnectTerminal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [log, setLog] = useState<LogLine[]>([]);
   const [input, setInput] = useState("");
@@ -211,11 +248,39 @@ function ConnectTerminal({ open, onClose }: { open: boolean; onClose: () => void
             { kind: "dim", text: "" },
             { kind: "ok", text: "thanks. that's the deck." },
             { kind: "ok", text: "we'll ssh you when a human chad is online 💘" },
-            { kind: "dim", text: "process exited with code 0" },
+            { kind: "dim", text: "" },
+            { kind: "sys", text: "GET /matchmaking/cards → 503 (no humans found, deploying cope)" },
+            { kind: "dim", text: "spawning fake match profiles from /dev/urandom..." },
+            { kind: "dim", text: "" },
           ]);
-          setMode("done");
+          setTimeout(() => {
+            FAKE_MATCHES.forEach((m, i) => {
+              setTimeout(() => {
+                push([
+                  { kind: "bot", text: "┌─────────────────────────────────────────────┐" },
+                  { kind: "bot", text: `│ ${m.handle.padEnd(28)} ${m.compat.padStart(13)} │` },
+                  { kind: "bot", text: `│ ${m.role.padEnd(43)} │` },
+                  { kind: "bot", text: `│ stack: ${m.stack.padEnd(36)} │` },
+                  { kind: "bot", text: `│ vibe:  ${m.vibe.padEnd(36)} │` },
+                  { kind: "bot", text: `│ bio:   ${m.bio.padEnd(36)} │` },
+                  { kind: "bot", text: "└─────────────────────────────────────────────┘" },
+                  { kind: "dim", text: `  [l]ike  [p]ass  (just kidding, she's not real)` },
+                  { kind: "dim", text: "" },
+                ]);
+              }, i * 600);
+            });
+            setTimeout(() => {
+              push([
+                { kind: "ok", text: "matchmaking complete. 0 humans, 4 hallucinations." },
+                { kind: "dim", text: "tip: touch grass, recompile feelings, try again later." },
+                { kind: "dim", text: "process exited with code 0" },
+              ]);
+              setMode("done");
+            }, FAKE_MATCHES.length * 600 + 400);
+          }, 400);
           return;
         }
+
         setQIndex(nextIndex);
         askQuestion(SURVEY_QUESTIONS[nextIndex]);
       }, 350);
