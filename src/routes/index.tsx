@@ -243,9 +243,11 @@ function MatrixRain() {
 }
 
 function StatusBar() {
-  const [time, setTime] = useState(() => new Date().toISOString().split("T")[1]?.slice(0, 8) ?? "");
+  const [time, setTime] = useState("");
   useEffect(() => {
-    const i = setInterval(() => setTime(new Date().toISOString().split("T")[1]?.slice(0, 8) ?? ""), 1000);
+    const update = () => setTime(new Date().toISOString().split("T")[1]?.slice(0, 8) ?? "");
+    update();
+    const i = setInterval(update, 1000);
     return () => clearInterval(i);
   }, []);
   return (
@@ -260,7 +262,7 @@ function StatusBar() {
       <span className="hidden sm:inline">typescript</span>
       <div className="flex-1" />
       <span className="hidden sm:inline">CPU 87% / love 0%</span>
-      <span>{time} UTC</span>
+      <span>{time || "--:--:--"} UTC</span>
     </div>
   );
 }
