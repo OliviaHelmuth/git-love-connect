@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
+
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Typewriter } from "@/components/Typewriter";
 import { TerminalWindow } from "@/components/TerminalWindow";
