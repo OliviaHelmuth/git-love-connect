@@ -1021,8 +1021,8 @@ function Pricing() {
         <SectionHeader
           file="billing/plans.toml"
           icon="¤"
-          title="Pricing — npm-style."
-          subtitle="// no usage based billing for feelings (yet)"
+          title="Pricing — npm style"
+          subtitle="// no usage-based billing for feelings (yet)"
         />
         <div className="grid gap-6 md:grid-cols-2">
           {/* free */}
@@ -1032,14 +1032,14 @@ function Pricing() {
                 <span className="text-2xl font-bold text-term-green">free</span>
                 <span className="text-term-dim">$0/forever</span>
               </div>
-              <div className="mt-1 text-xs text-term-dim">// for the brokenly single</div>
+              <div className="mt-1 text-xs text-term-dim">// for the certified broke + single</div>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
-                  "Unlimited matchmaking",
-                  "Daytona workspaces",
-                  "AI fallback",
-                  "Shared terminal",
-                  "Unlimited emotional damage",
+                  "Unlimited matches (allegedly)",
+                  "Real Daytona workspaces",
+                  "AI gf if nobody's online",
+                  "Shared tmux session",
+                  "Free emotional damage",
                 ].map((x) => (
                   <li key={x} className="flex gap-2">
                     <span className="text-term-green">✓</span>
@@ -1048,7 +1048,7 @@ function Pricing() {
                 ))}
                 <li className="flex gap-2 text-term-dim">
                   <span className="text-term-red">✗</span>
-                  no guarantees
+                  zero guarantees. cope is on you.
                 </li>
               </ul>
               <a
@@ -1066,20 +1066,20 @@ function Pricing() {
           <TerminalWindow title="gitlaid-plus-plus.plan">
             <div className="relative overflow-hidden bg-term-bg p-6 font-mono">
               <div className="absolute right-3 top-3 rounded-sm border border-term-pink/40 bg-term-pink/10 px-2 py-0.5 text-[10px] text-term-pink">
-                anime mode
+                sigma tier
               </div>
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-bold text-term-pink glow-pink">GitLaid++</span>
                 <span className="text-term-dim">$9/month</span>
               </div>
-              <div className="mt-1 text-xs text-term-dim">// for the chronically online</div>
+              <div className="mt-1 text-xs text-term-dim">// for the chronically online · gigachad mode</div>
               <ul className="mt-4 space-y-2 text-sm">
                 {[
-                  ["Priority queue", "skip the line"],
-                  ["Custom AI personalities", "build your dream catgirl"],
+                  ["Priority queue", "skip the cope line"],
+                  ["Custom AI personas", "build your dream catgirl"],
                   ["Anime mode", "uwu rendered server-side"],
-                  ["Extra Copium", "1TB/month"],
-                  ["Encrypted DMs", "PGP or it didn't happen"],
+                  ["Unlimited copium", "stream it, baby"],
+                  ["PGP-encrypted DMs", "or it didn't happen"],
                 ].map(([t, sub]) => (
                   <li key={t} className="flex gap-2">
                     <span className="text-term-pink">✓</span>
