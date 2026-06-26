@@ -960,11 +960,11 @@ function MatchSystem() {
 /* ─────────────────────────────────────────── git log testimonials ─────────────────────────────────────────── */
 
 const COMMITS = [
-  { hash: "c4f33", author: "tmux_lord", date: "2h ago", msg: "She liked my tmux config.", color: "var(--term-green)" },
-  { hash: "deadbeef", author: "ana@rust", date: "5h ago", msg: "I accidentally found a co-founder.", color: "var(--term-orange)" },
-  { hash: "404", author: "lonely_dev", date: "1d ago", msg: "We're just friends.", color: "var(--term-red)" },
-  { hash: "beef420", author: "vim_curious", date: "3d ago", msg: "Still single. But now I know Vim.", color: "var(--term-purple)" },
-  { hash: "feedc0de", author: "kube_kat", date: "1w ago", msg: "We migrated our relationship to k8s. It scales.", color: "var(--term-blue)" },
+  { hash: "c4f33", author: "tmux_lord", date: "2h ago", msg: "She liked my .tmux.conf. I have ascended.", color: "var(--term-green)" },
+  { hash: "deadbeef", author: "ana@rust", date: "5h ago", msg: "Went in looking for a gf. Left with a co-founder. Mid result tbh.", color: "var(--term-orange)" },
+  { hash: "404", author: "lonely_dev", date: "1d ago", msg: "she said 'we're just friends'. it's so over.", color: "var(--term-red)" },
+  { hash: "beef420", author: "vim_curious", date: "3d ago", msg: "Still single. But I learned Vim. Net positive.", color: "var(--term-purple)" },
+  { hash: "feedc0de", author: "kube_kat", date: "1w ago", msg: "We migrated our relationship to k8s. It autoscales.", color: "var(--term-blue)" },
 ];
 
 function Testimonials() {
@@ -974,8 +974,8 @@ function Testimonials() {
         <SectionHeader
           file="git log --oneline testimonials/"
           icon="❯"
-          title="Receipts on the main branch."
-          subtitle="// rebased for clarity"
+          title="Receipts. On the main branch."
+          subtitle="// rebased for clarity, not for vibes"
         />
         <TerminalWindow title="git log -- testimonials/" variant="log">
           <div className="bg-term-bg p-5 font-mono text-sm">
