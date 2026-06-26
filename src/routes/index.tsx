@@ -296,8 +296,8 @@ function LiveDemo() {
         <SectionHeader
           file="demo/speed-date.replay"
           icon="▶"
-          title="Live re-run: an actual match."
-          subtitle="// names changed to protect the lonely"
+          title="Live replay: a real date (allegedly)."
+          subtitle="// names redacted to protect the gymcels"
         />
         <TerminalWindow
           tabs={[
