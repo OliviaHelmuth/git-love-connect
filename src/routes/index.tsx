@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Typewriter } from "@/components/Typewriter";
 import { TerminalWindow } from "@/components/TerminalWindow";
+import { SURVEY_QUESTIONS, formatQuestion, type SurveyQuestion } from "@/lib/gitlaid-survey";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,143 +33,194 @@ const DAYTONA_TERMINAL_COMMAND = [
   `  -d '${JSON.stringify(DAYTONA_CONNECT_PAYLOAD)}'`,
 ].join("\n");
 
-const connectDaytonaHarness = createServerFn({ method: "POST" }).handler(async () => {
-  const startedAt = Date.now();
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 8000);
 
-  try {
-    const response = await fetch(DAYTONA_CONNECT_URL, {
-      method: "POST",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(DAYTONA_CONNECT_PAYLOAD),
-      signal: controller.signal,
-    });
-    const body = await response.text();
-
-    return {
-      ok: response.ok,
-      status: response.status,
-      statusText: response.statusText,
-      body: body.slice(0, 1600),
-      elapsedMs: Date.now() - startedAt,
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      status: 0,
-      statusText: "request failed",
-      body: error instanceof Error ? error.message : "Unknown error",
-      elapsedMs: Date.now() - startedAt,
-    };
-  } finally {
-    clearTimeout(timeout);
-  }
-});
-
-const launchNativeTerminal = createServerFn({ method: "POST" }).handler(async () => {
-  const runtime = globalThis as typeof globalThis & {
-    process?: { platform?: string };
-  };
-
-  if (runtime.process?.platform !== "darwin") {
-    return {
-      ok: false,
-      message: "Native Terminal launch is only available from the local macOS dev server.",
-    };
-  }
-
-  const appleScript = [
-    'tell application "Terminal"',
-    "activate",
-    `do script ${JSON.stringify(DAYTONA_TERMINAL_COMMAND)}`,
-    "end tell",
-  ].join("\n");
-
-  try {
-    const { execFile } = await import("node:child_process");
-    const { promisify } = await import("node:util");
-    const execFileAsync = promisify(execFile);
-
-    await execFileAsync("osascript", ["-e", appleScript], {
-      timeout: 5000,
-    });
-
-    return {
-      ok: true,
-      message: "Opened Terminal.",
-    };
-  } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Terminal launch failed.",
-    };
-  }
-});
 
 /* ─────────────────────────────────────────── utilities ─────────────────────────────────────────── */
 
-type ConnectResult = Awaited<ReturnType<typeof connectDaytonaHarness>>;
-type NativeTerminalResult = Awaited<ReturnType<typeof launchNativeTerminal>>;
+type LogLine = { kind: "sys" | "bot" | "user" | "ok" | "err" | "dim"; text: string };
 
-function ConnectTerminal({
-  open,
-  launchResult,
-  onClose,
-}: {
-  open: boolean;
-  launchResult: NativeTerminalResult | null;
-  onClose: () => void;
-}) {
-  const [result, setResult] = useState<ConnectResult | null>(null);
-  const [running, setRunning] = useState(false);
+const WS_URL = DAYTONA_URL.replace(/^http/, "ws") + "/ws";
+
+function ConnectTerminal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const [log, setLog] = useState<LogLine[]>([]);
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<"booting" | "live" | "mock" | "done">("booting");
+  const [qIndex, setQIndex] = useState(0);
+  const [awaitingInput, setAwaitingInput] = useState(false);
   const [copied, setCopied] = useState(false);
+  const wsRef = useRef<WebSocket | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
+  const push = (lines: LogLine | LogLine[]) =>
+    setLog((prev) => prev.concat(Array.isArray(lines) ? lines : [lines]));
+
+  const askQuestion = (q: SurveyQuestion) => {
+    const lines = formatQuestion(q).map<LogLine>((text) => ({ kind: "bot", text }));
+    push(lines);
+    setAwaitingInput(true);
+  };
+
+  // open: try WS → REST connect → mock fallback
   useEffect(() => {
-    if (!open) {
-      setCopied(false);
+    if (!open) return;
+    setLog([]);
+    setInput("");
+    setQIndex(0);
+    setAwaitingInput(false);
+    setMode("booting");
+
+    let cancelled = false;
+    let fallbackTimer: ReturnType<typeof setTimeout> | null = null;
+
+    const startMock = (reason: string) => {
+      if (cancelled) return;
+      push([
+        { kind: "dim", text: reason },
+        { kind: "sys", text: "[gitlaid] no live socket — booting offline matchmaker." },
+        { kind: "sys", text: `harness: ${DAYTONA_CONNECT_PAYLOAD.harness_id} (mock)` },
+        { kind: "ok", text: "session opened. type your answers below ↓" },
+        { kind: "dim", text: "" },
+      ]);
+      setMode("mock");
+      setQIndex(0);
+      setTimeout(() => askQuestion(SURVEY_QUESTIONS[0]), 250);
+    };
+
+    push([
+      { kind: "sys", text: "$ ssh gitlaid.dev" },
+      { kind: "dim", text: `dialing ${WS_URL} ...` },
+    ]);
+
+    let ws: WebSocket | null = null;
+    try {
+      ws = new WebSocket(WS_URL);
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        if (cancelled) return;
+        if (fallbackTimer) clearTimeout(fallbackTimer);
+        setMode("live");
+        push({ kind: "ok", text: "✓ socket open — live session" });
+        ws?.send(JSON.stringify({ type: "connect", ...DAYTONA_CONNECT_PAYLOAD }));
+        setAwaitingInput(true);
+      };
+      ws.onmessage = (ev) => {
+        if (cancelled) return;
+        let text = ev.data as string;
+        try {
+          const parsed = JSON.parse(text);
+          text = parsed.message ?? parsed.question ?? parsed.text ?? text;
+        } catch {
+          /* plain text */
+        }
+        push({ kind: "bot", text: String(text) });
+        setAwaitingInput(true);
+      };
+      ws.onerror = () => {
+        if (cancelled || mode === "live") return;
+        if (fallbackTimer) clearTimeout(fallbackTimer);
+        startMock("✗ websocket refused (proxy doesn't speak ws)");
+      };
+      ws.onclose = () => {
+        if (cancelled) return;
+        if (mode === "live") {
+          push({ kind: "err", text: "socket closed by server." });
+          setAwaitingInput(false);
+          setMode("done");
+        }
+      };
+    } catch (error) {
+      startMock(`✗ ${error instanceof Error ? error.message : "ws init failed"}`);
+    }
+
+    fallbackTimer = setTimeout(() => {
+      if (cancelled) return;
+      if (ws && ws.readyState !== WebSocket.OPEN) {
+        try {
+          ws.close();
+        } catch {
+          /* noop */
+        }
+        startMock("✗ websocket handshake timeout (3s)");
+      }
+    }, 3000);
+
+    return () => {
+      cancelled = true;
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      try {
+        ws?.close();
+      } catch {
+        /* noop */
+      }
+      wsRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  // Esc to close
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, open]);
+
+  // autoscroll + autofocus
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [log, awaitingInput]);
+  useEffect(() => {
+    if (open && awaitingInput) inputRef.current?.focus();
+  }, [open, awaitingInput]);
+
+  const submit = () => {
+    const value = input.trim();
+    if (!value) return;
+    push({ kind: "user", text: `> ${value}` });
+    setInput("");
+
+    if (value === "/quit" || value === "exit") {
+      push({ kind: "ok", text: "session closed. process exited with code 0." });
+      setAwaitingInput(false);
+      setMode("done");
+      try {
+        wsRef.current?.close();
+      } catch {
+        /* noop */
+      }
       return;
     }
 
-    let ignore = false;
-    setResult(null);
-    setRunning(true);
-    connectDaytonaHarness()
-      .then((nextResult) => {
-        if (!ignore) setResult(nextResult);
-      })
-      .catch((error) => {
-        if (!ignore) {
-          setResult({
-            ok: false,
-            status: 0,
-            statusText: "terminal crashed",
-            body: error instanceof Error ? error.message : "Unknown error",
-            elapsedMs: 0,
-          });
+    if (mode === "live" && wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: "message", text: value }));
+      setAwaitingInput(false);
+      return;
+    }
+
+    if (mode === "mock") {
+      setAwaitingInput(false);
+      const nextIndex = qIndex + 1;
+      setTimeout(() => {
+        push({ kind: "dim", text: "  ✓ logged" });
+        if (nextIndex >= SURVEY_QUESTIONS.length) {
+          push([
+            { kind: "dim", text: "" },
+            { kind: "ok", text: "thanks. that's the deck." },
+            { kind: "ok", text: "we'll ssh you when a human chad is online 💘" },
+            { kind: "dim", text: "process exited with code 0" },
+          ]);
+          setMode("done");
+          return;
         }
-      })
-      .finally(() => {
-        if (!ignore) setRunning(false);
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [onClose, open]);
+        setQIndex(nextIndex);
+        askQuestion(SURVEY_QUESTIONS[nextIndex]);
+      }, 350);
+    }
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(DAYTONA_TERMINAL_COMMAND).then(() => {
@@ -179,6 +231,19 @@ function ConnectTerminal({
 
   if (!open) return null;
 
+  const colorFor = (k: LogLine["kind"]) =>
+    k === "user"
+      ? "text-term-cyan"
+      : k === "ok"
+        ? "text-term-green"
+        : k === "err"
+          ? "text-term-red"
+          : k === "sys"
+            ? "text-term-yellow"
+            : k === "dim"
+              ? "text-term-dim"
+              : "text-term-fg";
+
   return (
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center bg-term-bg/80 px-4 py-10 backdrop-blur-sm"
@@ -188,59 +253,61 @@ function ConnectTerminal({
       onClick={onClose}
     >
       <div className="w-full max-w-3xl" onClick={(event) => event.stopPropagation()}>
-        <TerminalWindow title="zsh — gitlaid connect" variant="log">
-          <div className="min-h-[320px] bg-term-bg p-5">
-            <div className="mb-4 flex items-center justify-between border-b border-term-border pb-3 text-xs text-term-dim">
-              <span>daytona harness connect</span>
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-term-dim transition hover:text-term-pink"
-              >
-                x
-              </button>
-            </div>
-            <div className="space-y-2 font-mono text-sm">
-              {launchResult && !launchResult.ok && (
-                <div className="rounded border border-term-yellow/30 bg-term-yellow/10 p-3 text-xs text-term-yellow">
-                  native terminal failed: {launchResult.message}
-                </div>
-              )}
-
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 overflow-x-auto whitespace-pre text-term-fg">
-                  <span className="text-term-green">$</span> {DAYTONA_TERMINAL_COMMAND}
-                </div>
+        <TerminalWindow title="zsh — gitlaid chat" variant="log">
+          <div className="bg-term-bg p-5">
+            <div className="mb-3 flex items-center justify-between border-b border-term-border pb-2 text-xs text-term-dim">
+              <span>
+                gitlaid · {mode === "live" ? "live ws" : mode === "mock" ? "offline mock" : mode}
+              </span>
+              <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className={`shrink-0 rounded border px-2 py-1 text-xs transition ${
-                    copied
-                      ? "border-term-green/30 bg-term-green/10 text-term-green"
-                      : "border-term-border bg-term-panel text-term-dim hover:text-term-fg"
-                  }`}
+                  className="rounded border border-term-border bg-term-panel px-2 py-0.5 text-[10px] transition hover:text-term-fg"
                 >
-                  {copied ? "copied!" : "copy"}
+                  {copied ? "copied!" : "copy curl"}
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="text-term-dim transition hover:text-term-pink"
+                >
+                  x
                 </button>
               </div>
-              {running && (
-                <>
-                  <div className="text-term-dim">connecting to proxy...</div>
+            </div>
+            <div
+              ref={scrollRef}
+              className="h-[420px] overflow-y-auto whitespace-pre-wrap font-mono text-sm leading-relaxed"
+            >
+              {log.map((line, i) => (
+                <div key={i} className={colorFor(line.kind)}>
+                  {line.text || "\u00A0"}
+                </div>
+              ))}
+              {awaitingInput && (
+                <div className="mt-1 flex items-center gap-2 text-term-fg">
+                  <span className="text-term-green">olivia@gitlaid:~$</span>
+                  <input
+                    ref={inputRef}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        submit();
+                      }
+                    }}
+                    className="flex-1 border-0 bg-transparent font-mono text-sm text-term-fg outline-none"
+                    autoComplete="off"
+                    spellCheck={false}
+                    placeholder={mode === "mock" ? "type a number or text…" : "say something…"}
+                  />
                   <span className="caret" />
-                </>
+                </div>
               )}
-              {result && (
-                <>
-                  <div className={result.ok ? "text-term-green" : "text-term-red"}>
-                    HTTP {result.status || "ERR"} {result.statusText} ({result.elapsedMs}ms)
-                  </div>
-                  <pre className="max-h-48 overflow-auto rounded border border-term-border bg-term-panel-2 p-3 text-xs text-term-fg">
-                    {result.body || "(empty response)"}
-                  </pre>
-                  <div className={result.ok ? "text-term-green" : "text-term-red"}>
-                    process exited with code {result.ok ? 0 : 1}
-                  </div>
-                </>
+              {mode === "done" && (
+                <div className="mt-2 text-term-dim">— end of session — (esc to close)</div>
               )}
             </div>
           </div>
@@ -1521,29 +1588,13 @@ function Footer({ onLaunchTerminal }: { onLaunchTerminal: () => void }) {
 function GitLaidLanding() {
   const [status, setStatus] = useState("checking daytona");
   const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
-  const [nativeTerminalResult, setNativeTerminalResult] = useState<NativeTerminalResult | null>(null);
 
-  const launchTerminal = () => {
-    launchNativeTerminal()
-      .then((result) => {
-        setNativeTerminalResult(result);
-        if (!result.ok) setHealthTerminalOpen(true);
-      })
-      .catch((error) => {
-        setNativeTerminalResult({
-          ok: false,
-          message: error instanceof Error ? error.message : "Terminal launch failed.",
-        });
-        setHealthTerminalOpen(true);
-      });
-  };
-
+  const launchTerminal = () => setHealthTerminalOpen(true);
 
   useEffect(() => {
     const handler = () => launchTerminal();
     window.addEventListener("gitlaid:launch", handler);
     return () => window.removeEventListener("gitlaid:launch", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -1577,7 +1628,6 @@ function GitLaidLanding() {
       <StatusBar />
       <ConnectTerminal
         open={healthTerminalOpen}
-        launchResult={nativeTerminalResult}
         onClose={() => setHealthTerminalOpen(false)}
       />
     </div>
