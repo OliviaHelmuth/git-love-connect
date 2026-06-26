@@ -6,16 +6,16 @@ import { TerminalWindow } from "@/components/TerminalWindow";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "GitLaid — SSH into love" },
+      { title: "GitLaid — ssh into a girlfriend" },
       {
         name: "description",
         content:
-          "git clone love. The world's first terminal-native dating app, powered by Daytona. Match with another sleep-deprived engineer in a shared tmux session.",
+          "git clone love. The only dating app where you ssh into a Daytona box and yap with another lonely dev for 5 minutes. No humans online? We spawn a Chadbot.",
       },
-      { property: "og:title", content: "GitLaid — SSH into love" },
+      { property: "og:title", content: "GitLaid — ssh into a girlfriend" },
       {
         property: "og:description",
-        content: "git clone love. Powered by Daytona. Spawn an AI date if nobody's online.",
+        content: "Cope harder. Match faster. Powered by Daytona. AI girlfriend fallback included.",
       },
     ],
   }),
