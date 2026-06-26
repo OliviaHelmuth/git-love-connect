@@ -75,18 +75,20 @@ type ConnectResult = Awaited<ReturnType<typeof connectDaytonaHarness>>;
 
 function ConnectTerminal({
   open,
-  launchResult,
   onClose,
 }: {
   open: boolean;
-  launchResult: NativeTerminalResult | null;
   onClose: () => void;
 }) {
   const [result, setResult] = useState<ConnectResult | null>(null);
   const [running, setRunning] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setCopied(false);
+      return;
+    }
 
     let ignore = false;
     setResult(null);
@@ -125,6 +127,13 @@ function ConnectTerminal({
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [onClose, open]);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(DAYTONA_TERMINAL_COMMAND).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+
   if (!open) return null;
 
   return (
@@ -149,13 +158,24 @@ function ConnectTerminal({
               </button>
             </div>
             <div className="space-y-2 font-mono text-sm">
-              {launchResult && !launchResult.ok && (
-                <div className="rounded border border-term-yellow/30 bg-term-yellow/10 p-3 text-xs text-term-yellow">
-                  native terminal failed: {launchResult.message}
+              <div className="rounded border border-term-blue/30 bg-term-blue/10 p-3 text-xs text-term-blue">
+                Command copied to clipboard. Paste it into your terminal and press Enter.
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1 overflow-x-auto whitespace-pre text-term-fg">
+                  <span className="text-term-green">$</span> {DAYTONA_TERMINAL_COMMAND}
                 </div>
-              )}
-              <div>
-                <span className="text-term-green">$</span> {DAYTONA_TERMINAL_COMMAND}
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className={`shrink-0 rounded border px-2 py-1 text-xs transition ${
+                    copied
+                      ? "border-term-green/30 bg-term-green/10 text-term-green"
+                      : "border-term-border bg-term-panel text-term-dim hover:text-term-fg"
+                  }`}
+                >
+                  {copied ? "copied!" : "copy"}
+                </button>
               </div>
               {running && (
                 <>
