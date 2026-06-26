@@ -1261,10 +1261,10 @@ function Footer() {
             <div className="text-term-fg">On branch <span className="text-term-green">main</span></div>
             <div className="text-term-dim">Your branch is up to date with 'origin/main'.</div>
             <div className="mt-1">nothing to commit, working tree clean</div>
-            <div className="mt-1 text-term-pink glow-pink">still single</div>
+            <div className="mt-1 text-term-pink glow-pink">still single (for now)</div>
             <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-term-border pt-4 text-xs text-term-dim">
               <span>© {new Date().getFullYear()} GitLaid Inc.</span>
-              <span>// not affiliated with your therapist</span>
+              <span>// powered by Daytona · not affiliated with your therapist</span>
               <div className="flex-1" />
               <a href="#" className="hover:text-term-green">github</a>
               <a href="#" className="hover:text-term-green">/docs</a>
