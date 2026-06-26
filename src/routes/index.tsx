@@ -916,29 +916,29 @@ function MatchSystem() {
         <SectionHeader
           file="src/match-system.ts"
           icon="❤"
-          title="Both commit, or both reset."
-          subtitle="// consent via cli, the way nature intended"
+          title="Both commit, or it never happened."
+          subtitle="// consent via CLI — that's right, foid, type Y"
         />
         <div className="grid gap-6 md:grid-cols-2">
           <TerminalWindow title="you@laptop">
             <div className="space-y-2 bg-term-bg p-5 font-mono text-sm">
-              <div className="text-term-dim">// 5 min timer expires</div>
+              <div className="text-term-dim">// 5 min timer just expired</div>
               <div>
-                <span className="text-term-green">$</span> /git commit
+                <span className="text-term-green">$</span> /git commit -m "i kinda vibe with her"
               </div>
-              <div className="text-term-green">[committed] ✓ awaiting partner...</div>
+              <div className="text-term-green">[committed] ✓ waiting for her response (cope)...</div>
               <div className="text-term-dim">
-                <Typewriter text="...waiting...waiting..." speed={80} />
+                <Typewriter text="...waiting...waiting...still waiting..." speed={80} />
               </div>
             </div>
           </TerminalWindow>
           <TerminalWindow title="ashley@daytona">
             <div className="space-y-2 bg-term-bg p-5 font-mono text-sm">
-              <div className="text-term-dim">// 5 min timer expires</div>
+              <div className="text-term-dim">// 5 min timer just expired</div>
               <div>
-                <span className="text-term-pink">$</span> /git commit
+                <span className="text-term-pink">$</span> /git commit -m "ok he's not unfixable"
               </div>
-              <div className="text-term-green">[committed] ✓ usernames exchanged</div>
+              <div className="text-term-green">[committed] ✓ handles dropped</div>
               <pre className="rounded bg-term-panel-2 p-3 text-xs text-term-fg">
 {`→ github.com/ashley.eth
 → keybase.io/ashley
@@ -950,7 +950,7 @@ function MatchSystem() {
         <div className="mt-4 rounded-md border border-term-red/30 bg-term-red/5 p-4 font-mono text-sm text-term-red">
           <span className="font-bold">otherwise:</span>{" "}
           <span className="text-term-fg">git reset --hard HEAD~1</span>{" "}
-          <span className="text-term-dim">// nothing happened, nothing to see</span>
+          <span className="text-term-dim">// it's so over. dilate. nothing happened.</span>
         </div>
       </div>
     </section>
