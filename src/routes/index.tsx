@@ -1477,33 +1477,11 @@ function GitLaidLanding() {
   const [healthTerminalOpen, setHealthTerminalOpen] = useState(false);
 
   const launchTerminal = () => {
+    // execute the curl directly via server fn and stream output into the in-page terminal
     navigator.clipboard.writeText(DAYTONA_TERMINAL_COMMAND).catch(() => {});
-    // download a .command file — double-click on macOS opens Terminal and runs curl
-    try {
-      const script = [
-        "#!/bin/bash",
-        "clear",
-        "echo '>>> ssh-ing into gitlaid... brace for emotional damage'",
-        "echo ''",
-        DAYTONA_TERMINAL_COMMAND,
-        "echo ''",
-        "echo '>>> connection attempt complete. press any key to dilate.'",
-        "read -n 1 -s",
-      ].join("\n");
-      const blob = new Blob([script], { type: "application/x-sh" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "gitlaid-connect.command";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch {
-      /* ignore — clipboard + modal still work */
-    }
     setHealthTerminalOpen(true);
   };
+
 
   useEffect(() => {
     const handler = () => launchTerminal();
