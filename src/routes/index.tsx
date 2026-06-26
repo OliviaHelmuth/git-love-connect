@@ -127,15 +127,15 @@ function TopBar({ status }: { status: string }) {
 /* ─────────────────────────────────────────── boot / hero ─────────────────────────────────────────── */
 
 const BOOT_LINES = [
-  { t: "Initializing loneliness...", color: "text-term-fg" },
-  { t: "Loading social skills...", color: "text-term-fg" },
-  { t: "ERROR: social skills module missing", color: "text-term-red" },
-  { t: "Retrying...", color: "text-term-yellow" },
-  { t: "Connecting to Daytona...", color: "text-term-blue" },
-  { t: "Provisioning workspace [▓▓▓▓▓▓▓▓▓▓] 100%", color: "text-term-green" },
-  { t: "Searching for another sleep-deprived engineer...", color: "text-term-fg" },
+  { t: "Booting cope.exe...", color: "text-term-fg" },
+  { t: "Loading rizz module...", color: "text-term-fg" },
+  { t: "ERROR: rizz not found (have you tried the gym?)", color: "text-term-red" },
+  { t: "Retrying as Sigma...", color: "text-term-yellow" },
+  { t: "Tunneling into Daytona...", color: "text-term-blue" },
+  { t: "Spinning up workspace [▓▓▓▓▓▓▓▓▓▓] 100%", color: "text-term-green" },
+  { t: "Scanning for another touch-grass-deprived dev...", color: "text-term-fg" },
   { t: "", color: "" },
-  { t: "Match Found.", color: "text-term-green glow-green" },
+  { t: "She found you. (cope)", color: "text-term-green glow-green" },
 ];
 
 function BootSequence({ onDone }: { onDone?: () => void }) {
